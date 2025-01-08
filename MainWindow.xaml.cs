@@ -19,6 +19,7 @@ namespace PeakyPaint
         public MainWindow()
         {
             InitializeComponent();
+            //hallo gamers;
         }
     }
 }
