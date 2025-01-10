@@ -4,23 +4,29 @@
         Title="Drawing App" Height="450" Width="800">
     <Grid>
         <DockPanel>
-        <!-- Menu Bar -->
-        <Menu DockPanel.Dock="Top">
-            <!-- File Menu -->
-            <MenuItem Header="File">
-                <MenuItem Header="Open" Click="OpenMenuItem_Click"/>
-                <MenuItem Header="Save" Click="SaveMenuItem_Click"/>
-            </MenuItem>
-                <MenuItem Header="Join" HorizontalAlignment="Center" Width="54">
+            <!-- Menu Bar -->
+            <Menu DockPanel.Dock="Top">
+                <!-- File Menu -->
+                <MenuItem Header="File">
+                    <MenuItem Header="Open" Click="OpenMenuItem_Click"/>
+                    <MenuItem Header="Save" Click="SaveMenuItem_Click"/>
+                </MenuItem>
+                <MenuItem Header="Join" HorizontalAlignment="Left" Width="33">
                     <MenuItem Header="Room1"/>
                     <MenuItem Header="Room2"/>
                     <MenuItem Header="Room3"/>
                 </MenuItem>
             </Menu>
 
-        <!-- Drawing Area -->
-        <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" DockPanel.Dock="Top" Height="415"/>
-        
-    </DockPanel>
+            <!-- Drawing Area -->
+            <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" DockPanel.Dock="Top" Height="415">
+                <ToolBar Height="41" Width="800" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <RadioButton Content="Paint Brush" Height="41" Width="78"/>
+                    <RadioButton Content="Pencil" Height="41" Width="78"/>
+                    <RadioButton Content="Eraser" Height="41" Width="78"/>
+                </ToolBar>
+            </Canvas>
+
+        </DockPanel>
     </Grid>
 </Window>
