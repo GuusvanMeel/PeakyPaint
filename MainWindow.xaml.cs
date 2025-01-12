@@ -22,10 +22,11 @@ namespace DrawingApp
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 isDrawing = true;
+                int thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
                 currentLine = new Polyline
                 {
                     Stroke = Brushes.Black,   // Black color for drawing
-                    StrokeThickness = 2       // Line thickness
+                    StrokeThickness = thickness       // Line thickness
                 };
                 DrawingCanvas.Children.Add(currentLine); // Add line to canvas
                 var position = e.GetPosition(DrawingCanvas); // Get initial mouse position
