@@ -3,14 +3,19 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Drawing;
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace DrawingApp
 {
     public partial class MainWindow : Window
     {
         private bool isDrawing = false; // Flag to track drawing state
-        private Polyline? currentLine = null;  // The current line being drawn
-        private Color selectedColor;
+        private Polyline currentLine; // The current line being drawn
+        private System.Windows.Media.Brush selectedBrush = System.Windows.Media.Brushes.Black; // The current selected brush color
+        System.Windows.Media.Color selectedColor = Colors.Black;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -80,8 +85,8 @@ namespace DrawingApp
         // Color Picker selection changed
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
-            selectedColor = (Color)e.NewValue;
-            
+            selectedColor = (System.Windows.Media.Color)e.NewValue;
+            selectedBrush = new SolidColorBrush(selectedColor);
         }
 
         // Determine which radio button is selected
