@@ -20,8 +20,8 @@
 
             <!-- Drawing Area -->
             <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" DockPanel.Dock="Top" Height="415">
-                <ToolBar Height="41" Width="800" HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <RadioButton Content="Paint Brush" Height="41" Width="78"/>
+                <ToolBar Name="Toolbar" Background="Beige" Height="41" Width="800" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <RadioButton Content="Paint Brush" IsChecked="True" Height="41" Width="78"/>
                    
                     <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="0">
                         <ComboBox.ItemsSource>
@@ -81,7 +81,9 @@
                     </ComboBox>
 
                     <RadioButton Content="Pencil" Height="41" Width="78"/>
-                    <RadioButton Content="Eraser" Height="41" Width="78"/>
+                    <RadioButton Content="LinearGradiant" Name="LinearGradiant" Height="41" Width="78"/>
+                    <RadioButton Content="RadialGradiant" Name="RadialGradient" Height="41" Width="78"/>
+                    <RadioButton Content="Eraser" Name="Eraser" Height="41" Width="78"/>
                 </ToolBar>
             </Canvas>
 

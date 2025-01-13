@@ -2,7 +2,9 @@
 using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Windows.Media;
-using Microsoft.Win32; // For OpenFileDialog and SaveFileDialog
+using Microsoft.Win32;
+using System.Windows.Controls;
+using PeakyPaint; // For OpenFileDialog and 
 
 namespace DrawingApp
 {
@@ -14,19 +16,42 @@ namespace DrawingApp
         public MainWindow()
         {
             InitializeComponent();
+                
         }
-
+        
         // Start drawing when the mouse button is pressed
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            isDrawing = true;
+
             if (e.ButtonState == MouseButtonState.Pressed)
             {
-                isDrawing = true;
+                RadioButton button = WhatRadioButton();
+               
+
+                Brush selectedbrush = Brushes.Black;
+                switch (button.Name)
+                {   
+                    case "LinearGradiant":
+                        selectedbrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45); //HIER OOK KLEURENPICKER
+                        
+                        break;
+                    case "RadialGradient":
+                        selectedbrush = new RadialGradientBrush(Colors.Red, Colors.Blue); // JE HEBT EEN KLEURENPICKER VOOR DIT NODIG
+                        break;
+                    case "Eraser":
+                        selectedbrush = Brushes.White; //MOET VERANDEREN IN BACKGROUND COLOUR NIET WIT
+                        break;
+
+
+
+                }
+
                 int thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
                 currentLine = new Polyline
-                {
-                    Stroke = Brushes.Black,   // Black color for drawing
-                    StrokeThickness = thickness       // Line thickness
+                {   
+                    Stroke = selectedbrush,   
+                    StrokeThickness = thickness       
                 };
                 DrawingCanvas.Children.Add(currentLine); // Add line to canvas
                 var position = e.GetPosition(DrawingCanvas); // Get initial mouse position
@@ -59,7 +84,7 @@ namespace DrawingApp
         // Open menu item click handler
         private void OpenMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new ();
             if (openFileDialog.ShowDialog() == true)
             {
                 string filePath = openFileDialog.FileName;
@@ -71,13 +96,25 @@ namespace DrawingApp
         // Save menu item click handler
         private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            SaveFileDialog saveFileDialog = new ();
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filePath = saveFileDialog.FileName;
                 // Add file saving logic here, e.g., save the current drawing to the file
                 MessageBox.Show($"Saving file: {filePath}");
             }
+        }
+        private RadioButton WhatRadioButton()
+        {
+            foreach(var child in Toolbar.Items)
+            {
+                if(child is RadioButton radiobutton && radiobutton.IsChecked == true)
+                {
+                   
+                    return radiobutton;
+                }
+            }
+            return null;
         }
     }
 }
