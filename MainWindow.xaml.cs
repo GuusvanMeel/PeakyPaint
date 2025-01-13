@@ -11,7 +11,7 @@ namespace DrawingApp
     public partial class MainWindow : Window
     {
         private bool isDrawing = false; // Flag to track drawing state
-        private Polyline currentLine; // The current line being drawn
+        private Polyline? currentLine; // The current line being drawn
 
         public MainWindow()
         {
@@ -47,15 +47,25 @@ namespace DrawingApp
 
 
                 }
-
                 int thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
+                Ellipse currentDot = new Ellipse
+                {
+                    Fill = selectedbrush,  // Use selected brush
+                    Width = thickness,     // Width of the dot
+                    Height = thickness     // Height of the dot (same as width for a perfect circle)
+                };
+                var position = e.GetPosition(DrawingCanvas); // Get initial mouse position
+                Canvas.SetLeft(currentDot, position.X - thickness / 2);
+                Canvas.SetTop(currentDot, position.Y - thickness / 2);
+                DrawingCanvas.Children.Add(currentDot);
                 currentLine = new Polyline
                 {   
                     Stroke = selectedbrush,   
                     StrokeThickness = thickness       
                 };
                 DrawingCanvas.Children.Add(currentLine); // Add line to canvas
-                var position = e.GetPosition(DrawingCanvas); // Get initial mouse position
+              
+                
                 currentLine.Points.Add(position);  // Add first point to the line
             }
         }

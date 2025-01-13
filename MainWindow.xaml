@@ -34,11 +34,51 @@
                             <sys:Int32>8</sys:Int32>
                             <sys:Int32>9</sys:Int32>
                             <sys:Int32>10</sys:Int32>
+                            <sys:Int32>11</sys:Int32>
+                            <sys:Int32>12</sys:Int32>
+                            <sys:Int32>13</sys:Int32>
+                            <sys:Int32>14</sys:Int32>
+                            <sys:Int32>15</sys:Int32>
+                            <sys:Int32>16</sys:Int32>
+                            <sys:Int32>17</sys:Int32>
+                            <sys:Int32>18</sys:Int32>
+                            <sys:Int32>19</sys:Int32>
+                            <sys:Int32>20</sys:Int32>
+                            <sys:Int32>21</sys:Int32>
+                            <sys:Int32>22</sys:Int32>
+                            <sys:Int32>23</sys:Int32>
+                            <sys:Int32>24</sys:Int32>
+                            <sys:Int32>25</sys:Int32>
+                            <sys:Int32>26</sys:Int32>
+                            <sys:Int32>27</sys:Int32>
+                            <sys:Int32>28</sys:Int32>
+                            <sys:Int32>29</sys:Int32>
+                            <sys:Int32>30</sys:Int32>
+                            <sys:Int32>31</sys:Int32>
+                            <sys:Int32>32</sys:Int32>
+                            <sys:Int32>33</sys:Int32>
+                            <sys:Int32>34</sys:Int32>
+                            <sys:Int32>35</sys:Int32>
+                            <sys:Int32>36</sys:Int32>
+                            <sys:Int32>37</sys:Int32>
+                            <sys:Int32>38</sys:Int32>
+                            <sys:Int32>39</sys:Int32>
+                            <sys:Int32>40</sys:Int32>
+                            <sys:Int32>41</sys:Int32>
+                            <sys:Int32>42</sys:Int32>
+                            <sys:Int32>43</sys:Int32>
+                            <sys:Int32>44</sys:Int32>
+                            <sys:Int32>45</sys:Int32>
+                            <sys:Int32>46</sys:Int32>
+                            <sys:Int32>47</sys:Int32>
+                            <sys:Int32>48</sys:Int32>
+                            <sys:Int32>49</sys:Int32>
+                            <sys:Int32>50</sys:Int32>
                         </x:Array>
                     </ComboBox.ItemsSource>
                 </ComboBox>
                 <RadioButton Content="Pencil" Height="41" Width="78"/>
-                <RadioButton Content="LinearGradient" Name="LinearGradient" Height="41" Width="78"/>
+                <RadioButton Content="LinearGradient" Name="LinearGradiant" Height="41" Width="78"/>
                 <RadioButton Content="RadialGradient" Name="RadialGradient" Height="41" Width="78"/>
                 <RadioButton Content="Eraser" Name="Eraser" Height="41" Width="78"/>
             </ToolBar>

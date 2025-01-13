@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace PeakyPaint
 {
-    #pragma warning disable IDE0290
+    
     class DrawingUtensil
     {
         public Brush? Brush { get; set; }
@@ -57,9 +57,6 @@ namespace PeakyPaint
             this.Brush = visualBrush; // VisualBrush inherits from Brush
             this.Thickness = thickness;
         }
-       public void makebrush(Brush _brush, double _thickness)
-        {
-            DrawingUtensil brush = new DrawingUtensil(_brush, _thickness);
-        }
+     
     }
 }
