@@ -1,17 +1,17 @@
 ﻿using System.Windows;
-using System.Windows.Input;
-using System.Windows.Shapes;
-using System.Windows.Media;
-using Microsoft.Win32;
 using System.Windows.Controls;
-using PeakyPaint; // For OpenFileDialog and 
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace DrawingApp
 {
     public partial class MainWindow : Window
     {
         private bool isDrawing = false; // Flag to track drawing state
-        private Polyline? currentLine; // The current line being drawn
+        private Polyline currentLine; // The current line being drawn
+        private Brush selectedBrush = Brushes.Black; // The current selected brush color
+        Color selectedColor = Colors.Black;
 
         public MainWindow()
         {
@@ -19,7 +19,7 @@ namespace DrawingApp
             ToolBar toolbar = (ToolBar)this.FindName("Toolbar");
 
         }
-        
+
         // Start drawing when the mouse button is pressed
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -28,29 +28,23 @@ namespace DrawingApp
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 RadioButton button = WhatRadioButton();
-               
 
-                Brush selectedbrush = Brushes.Black;
                 switch (button.Name)
-                {   
+                {
                     case "LinearGradiant":
-                        selectedbrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45); //HIER OOK KLEURENPICKER
-                        
+                        selectedBrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45);
                         break;
                     case "RadialGradient":
-                        selectedbrush = new RadialGradientBrush(Colors.Red, Colors.Blue); // JE HEBT EEN KLEURENPICKER VOOR DIT NODIG
+                        selectedBrush = new RadialGradientBrush(Colors.Red, Colors.Blue);
                         break;
                     case "Eraser":
-                        selectedbrush = Brushes.White; //MOET VERANDEREN IN BACKGROUND COLOUR NIET WIT
+                        selectedBrush = Brushes.White; // You can modify this if needed
                         break;
-
-
-
                 }
                 int thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
                 Ellipse currentDot = new Ellipse
                 {
-                    Fill = selectedbrush,  // Use selected brush
+                    Fill = selectedBrush,  // Use selected brush
                     Width = thickness,     // Width of the dot
                     Height = thickness     // Height of the dot (same as width for a perfect circle)
                 };
@@ -59,70 +53,47 @@ namespace DrawingApp
                 Canvas.SetTop(currentDot, position.Y - thickness / 2);
                 DrawingCanvas.Children.Add(currentDot);
                 currentLine = new Polyline
-                {   
-                    Stroke = selectedbrush,   
-                    StrokeThickness = thickness       
+                {
+                    Stroke = new SolidColorBrush(selectedColor),
+                    StrokeThickness = thickness
                 };
-                DrawingCanvas.Children.Add(currentLine); // Add line to canvas
-              
-                
-                currentLine.Points.Add(position);  // Add first point to the line
+                DrawingCanvas.Children.Add(currentLine);
+                var positon = e.GetPosition(DrawingCanvas);
+                currentLine.Points.Add(position);
             }
         }
 
         // Draw the line while the mouse is moving
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDrawing)  // Only draw if mouse button is pressed
+            if (isDrawing)
             {
-                var position = e.GetPosition(DrawingCanvas);  // Get the new mouse position
-                currentLine.Points.Add(position);  // Add new point to the line
+                var position = e.GetPosition(DrawingCanvas);
+                currentLine.Points.Add(position);
             }
         }
 
         // Stop drawing when the mouse button is released
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            isDrawing = false; // Stop drawing when the mouse is released
+            isDrawing = false;
         }
 
-        // Clear the canvas
-        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        // Color Picker selection changed
+        private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
-            DrawingCanvas.Children.Clear();  // Clears all elements on the canvas
+            selectedColor = (Color)e.NewValue;
+            selectedBrush = new SolidColorBrush(selectedColor);
         }
 
-        // Open menu item click handler
-        private void OpenMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new ();
-            if (openFileDialog.ShowDialog() == true)
-            {
-                string filePath = openFileDialog.FileName;
-                // Add file loading logic here, e.g., load a drawing from the file
-                MessageBox.Show($"Opening file: {filePath}");
-            }
-        }
-
-        // Save menu item click handler
-        private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog saveFileDialog = new ();
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                string filePath = saveFileDialog.FileName;
-                // Add file saving logic here, e.g., save the current drawing to the file
-                MessageBox.Show($"Saving file: {filePath}");
-            }
-        }
+        // Determine which radio button is selected
         private RadioButton WhatRadioButton()
         {
-            foreach(var child in Toolbar.Items)
+            foreach (var child in Toolbar.Items)
             {
-                if(child is RadioButton radiobutton && radiobutton.IsChecked == true)
+                if (child is RadioButton radioButton && radioButton.IsChecked == true)
                 {
-                   
-                    return radiobutton;
+                    return radioButton;
                 }
             }
             return null;
