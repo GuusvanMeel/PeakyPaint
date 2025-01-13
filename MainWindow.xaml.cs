@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.IO;
 
@@ -12,9 +11,8 @@ namespace DrawingApp
     public partial class MainWindow : Window
     {
         private bool isDrawing = false; // Flag to track drawing state
-        private Polyline currentLine; // The current line being drawn
-        private System.Windows.Media.Brush selectedBrush = System.Windows.Media.Brushes.Black; // The current selected brush color
-        System.Windows.Media.Color selectedColor = Colors.Black;
+        private Polyline? currentLine = null; // The current line being drawn
+        Color selectedColor = Colors.Black;
 
         public MainWindow()
         {
@@ -31,6 +29,7 @@ namespace DrawingApp
                 Brush selectedbrush = new SolidColorBrush(selectedColor);
                 int thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
                 var position = e.GetPosition(DrawingCanvas); // Get initial mouse position
+
                 RadioButton? button = WhatRadioButton();
                 if (button != null)
                 {
@@ -55,7 +54,7 @@ namespace DrawingApp
 
                 currentLine = new Polyline
                 {
-                    Stroke = new SolidColorBrush(selectedColor),
+                    Stroke = selectedbrush,
                     StrokeThickness = thickness
                 };
                 
@@ -83,14 +82,17 @@ namespace DrawingApp
         }
 
         // Color Picker selection changed
-        private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            selectedColor = (System.Windows.Media.Color)e.NewValue;
-            selectedBrush = new SolidColorBrush(selectedColor);
+            if (e.NewValue.HasValue)
+            {
+                selectedColor = e.NewValue.Value; 
+            }
+
         }
 
         // Determine which radio button is selected
-        private RadioButton WhatRadioButton()
+        private RadioButton? WhatRadioButton()
         {
             foreach (var child in Toolbar.Items)
             {
@@ -114,5 +116,83 @@ namespace DrawingApp
             Canvas.SetTop(currentDot, position.Y - thickness / 2);
             DrawingCanvas.Children.Add(currentDot);
         }
+        private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the actual width and height of the Canvas
+            double canvasWidth = DrawingCanvas.ActualWidth;
+            double canvasHeight = DrawingCanvas.ActualHeight;
+
+            // Create a RenderTargetBitmap to capture the Canvas area
+            RenderTargetBitmap renderTargetBitmap = new (
+                (int)canvasWidth,
+                (int)canvasHeight,
+                96, 96, PixelFormats.Pbgra32);
+
+            // Render only the Canvas content (no toolbar or surrounding UI)
+            renderTargetBitmap.Render(DrawingCanvas);
+
+            // Save to a memory stream
+            using MemoryStream memoryStream = new ();
+            BitmapEncoder encoder = new BmpBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+            // Save the frame into the memory stream
+            encoder.Save(memoryStream);
+
+            // Convert to System.Drawing.Bitmap
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            using System.Drawing.Bitmap bitmap = new (memoryStream);
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new ()
+            {
+                Filter = "Bitmap Files (*.bmp)|*.bmp"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                bitmap.Save(saveFileDialog.FileName, System.Drawing.Imaging.ImageFormat.Bmp);
+            }
+        }
+
+        private void LoadMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Open a file dialog to select the saved bitmap
+            Microsoft.Win32.OpenFileDialog openFileDialog = new ()
+            {
+                Filter = "Bitmap Files (*.bmp)|*.bmp"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // Load the selected bitmap from the file
+                string filePath = openFileDialog.FileName;
+                System.Drawing.Bitmap loadedBitmap = new (filePath);
+
+                // Convert the System.Drawing.Bitmap to a WPF BitmapImage
+                BitmapImage bitmapImage = new ();
+                using (MemoryStream memoryStream = new ())
+                {
+                    loadedBitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.StreamSource = memoryStream;
+                    bitmapImage.EndInit();
+                }
+
+                // Create an Image control to display the loaded bitmap
+                Image imageControl = new ()
+                {
+                    Source = bitmapImage,
+                    Stretch = Stretch.None
+                };
+
+                // Add the image control to the Canvas, with the same offset
+                double cropOffset = 0; // This should match the saved offset
+                Canvas.SetTop(imageControl, cropOffset); // Place the image 100px from the top of the Canvas
+                DrawingCanvas.Children.Add(imageControl);
+            }
+        }
+
     }
 }

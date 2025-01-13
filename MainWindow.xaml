@@ -19,30 +19,33 @@
                 </MenuItem>
             </Menu>
 
-            <!-- Toolbar placed on top of the Canvas -->
-            <ToolBar DockPanel.Dock="Top" Name="Toolbar" Background="Beige" Height="41">
-                <RadioButton Content="Paint Brush" IsChecked="True" Height="41" Width="78"/>
-                <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="0">
-                    <ComboBox.ItemsSource>
-                        <x:Array Type="sys:Int32" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-                            <sys:Int32>1</sys:Int32>
-                            <sys:Int32>2</sys:Int32>
-                            <sys:Int32>3</sys:Int32>
-                            <sys:Int32>4</sys:Int32>
-                            <sys:Int32>5</sys:Int32>
-                        </x:Array>
-                    </ComboBox.ItemsSource>
-                </ComboBox>
-                <RadioButton Content="Pencil" Height="41" Width="78"/>
-                <RadioButton Content="LinearGradient" Name="LinearGradiant" Height="41" Width="78"/>
-                <RadioButton Content="RadialGradient" Name="RadialGradient" Height="41" Width="78"/>
-                <RadioButton Content="Eraser" Name="Eraser" Height="41" Width="78"/>
-                <xctk:ColorPicker Name="ColorPicker" Height="30" Width="100" SelectedColor="Black" SelectedColorChanged="ColorPicker_SelectedColorChanged">
-                </xctk:ColorPicker>
-            </ToolBar>
+            <!-- New ToolBar Tray -->
+            <ToolBarTray DockPanel.Dock="Top">
+                <ToolBar Name="Toolbar" Background="Beige" Height="41">
+                    <RadioButton Content="Paint Brush" IsChecked="True" Height="41" Width="78"/>
+                    <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="0">
+                        <ComboBox.ItemsSource>
+                            <x:Array Type="sys:Int32" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                <sys:Int32>1</sys:Int32>
+                                <sys:Int32>2</sys:Int32>
+                                <sys:Int32>3</sys:Int32>
+                                <sys:Int32>4</sys:Int32>
+                                <sys:Int32>5</sys:Int32>
+                            </x:Array>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <RadioButton Content="Pencil" Height="41" Width="78"/>
+                    <RadioButton Content="LinearGradient" Name="LinearGradiant" Height="41" Width="78"/>
+                    <RadioButton Content="RadialGradient" Name="RadialGradient" Height="41" Width="78"/>
+                    <RadioButton Content="Eraser" Name="Eraser" Height="41" Width="78"/>
+                    <xctk:ColorPicker Name="ColorPicker" Height="30" Width="100" SelectedColor="Black" SelectedColorChanged="ColorPicker_SelectedColorChanged"/>
+                </ToolBar>
+            </ToolBarTray>
 
             <!-- Drawing Area (Canvas) -->
-            <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" DockPanel.Dock="Top" Height="415"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" Height="415"/>
+            </ScrollViewer>
         </DockPanel>
     </Grid>
 </Window>
