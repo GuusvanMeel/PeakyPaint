@@ -13,10 +13,12 @@ namespace DrawingApp
         private bool isDrawing = false; // Flag to track drawing state
         private Polyline? currentLine = null; // The current line being drawn
         Color selectedColor = Colors.Black;
+        double zoomFactor = 1.0;
 
         public MainWindow()
         {
             InitializeComponent();
+            
         }
 
         // Start drawing when the mouse button is pressed
@@ -194,5 +196,123 @@ namespace DrawingApp
             }
         }
 
+        private void ExportMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Define the size of the area to capture (same size as the Canvas)
+            double width = DrawingCanvas.ActualWidth;
+            double height = DrawingCanvas.ActualHeight;
+
+
+            // Create a RenderTargetBitmap to render the Canvas content into a bitmap
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(
+                (int)width, (int)height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+
+            // Render the Canvas into the bitmap
+            renderTargetBitmap.Render(DrawingCanvas);
+
+            // Show a SaveFileDialog to choose where to save the file
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                // Create a file stream to save the image to
+                using (System.IO.FileStream fs = new System.IO.FileStream(saveFileDialog.FileName, System.IO.FileMode.Create))
+                {
+                    // Choose the appropriate encoder based on the file extension
+                    BitmapEncoder encoder = saveFileDialog.FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
+                        ? new PngBitmapEncoder()
+                        : new BmpBitmapEncoder();
+
+                    // Add the frame (image) to the encoder
+                    encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+                    // Save the image to the selected file
+                    encoder.Save(fs);
+                }
+            }
+        }
+
+        //zoom
+        private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                
+                if (e.Key == Key.Zoom)
+                { 
+                    ZoomIn();
+                }
+                else if (e.Key == Key.Subtract) 
+                {
+                    ZoomOut();
+                }
+            }
+        }
+
+        // Zoom in and out using the mouse wheel
+        private void DrawingCanvas_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0) // Mouse wheel up
+            {
+                ZoomIn();
+            }
+            else if (e.Delta < 0) // Mouse wheel down
+            {
+                ZoomOut();
+            }
+        }
+
+        // Zoom In
+        private void ZoomIn()
+        {
+            zoomFactor *= 1.1; // Increase zoom by 10%
+            UpdateCanvasZoom();
+        }
+
+        // Zoom Out
+        private void ZoomOut()
+        {
+            zoomFactor /= 1.1; // Decrease zoom by 10%
+            UpdateCanvasZoom();
+        }
+
+        // Update the scaling transform
+        private void UpdateCanvasZoom()
+        {
+            CanvasScaleTransform.ScaleX = zoomFactor;
+            CanvasScaleTransform.ScaleY = zoomFactor;
+        }
+        private void DiagramDesignerCanvasContainer_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // Determine the direction of the zoom (in or out)
+            bool zoomIn = e.Delta > 0;
+
+            // Set the scale value based on the direction of the zoom
+            zoomFactor += zoomIn ? 0.1 : -0.1;
+
+            // Set the maximum and minimum scale values
+            zoomFactor = zoomFactor < 0.1 ? 0.1 : zoomFactor;
+            zoomFactor = zoomFactor > 10.0 ? 10.0 : zoomFactor;
+
+            
+            CanvasScaleTransform.ScaleX = zoomFactor;
+            CanvasScaleTransform.ScaleY = zoomFactor;
+        }
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SliderValueText.Text = $"Zoom: {Math.Round(e.NewValue * 100)}%";
+            if (CanvasScaleTransform != null)
+            {
+                CanvasScaleTransform.ScaleX = e.NewValue;
+                CanvasScaleTransform.ScaleY = e.NewValue;
+            }
+            
+        }
     }
+
+
 }
+
