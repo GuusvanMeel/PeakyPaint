@@ -9,15 +9,11 @@ namespace DrawingApp
     public partial class MainWindow : Window
     {
         private bool isDrawing = false; // Flag to track drawing state
-        private Polyline currentLine; // The current line being drawn
-        private Brush selectedBrush = Brushes.Black; // The current selected brush color
-        Color selectedColor = Colors.Black;
-
+        private Polyline? currentLine = null;  // The current line being drawn
+        private Color selectedColor;
         public MainWindow()
         {
             InitializeComponent();
-            ToolBar toolbar = (ToolBar)this.FindName("Toolbar");
-
         }
 
         // Start drawing when the mouse button is pressed
@@ -27,46 +23,48 @@ namespace DrawingApp
 
             if (e.ButtonState == MouseButtonState.Pressed)
             {
-                RadioButton button = WhatRadioButton();
-
-                switch (button.Name)
-                {
-                    case "LinearGradiant":
-                        selectedBrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45);
-                        break;
-                    case "RadialGradient":
-                        selectedBrush = new RadialGradientBrush(Colors.Red, Colors.Blue);
-                        break;
-                    case "Eraser":
-                        selectedBrush = Brushes.White; // You can modify this if needed
-                        break;
-                }
+                Brush selectedbrush = new SolidColorBrush(selectedColor);
                 int thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
-                Ellipse currentDot = new Ellipse
-                {
-                    Fill = selectedBrush,  // Use selected brush
-                    Width = thickness,     // Width of the dot
-                    Height = thickness     // Height of the dot (same as width for a perfect circle)
-                };
                 var position = e.GetPosition(DrawingCanvas); // Get initial mouse position
-                Canvas.SetLeft(currentDot, position.X - thickness / 2);
-                Canvas.SetTop(currentDot, position.Y - thickness / 2);
-                DrawingCanvas.Children.Add(currentDot);
+                RadioButton? button = WhatRadioButton();
+                if (button != null)
+                {
+                    switch (button.Name)
+                    {
+                        case "LinearGradiant":
+                            selectedbrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45); //HIER OOK KLEURENPICKER
+                            break;
+                        case "RadialGradient":
+                            selectedbrush = new RadialGradientBrush(Colors.Red, Colors.Blue); // JE HEBT EEN KLEURENPICKER VOOR DIT NODIG
+                            break;
+                        case "Eraser":
+                            selectedbrush = Brushes.White; //MOET VERANDEREN IN BACKGROUND COLOUR NIET WIT
+                            break;
+
+
+
+                    }
+                }
+                
+                SetDot(selectedbrush, thickness, position);
+
                 currentLine = new Polyline
                 {
                     Stroke = new SolidColorBrush(selectedColor),
                     StrokeThickness = thickness
                 };
-                DrawingCanvas.Children.Add(currentLine);
-                var positon = e.GetPosition(DrawingCanvas);
-                currentLine.Points.Add(position);
+                
+                DrawingCanvas.Children.Add(currentLine); // Add line to canvas
+              
+                
+                currentLine.Points.Add(position);  // Add first point to the line
             }
         }
 
         // Draw the line while the mouse is moving
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDrawing)
+            if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
             {
                 var position = e.GetPosition(DrawingCanvas);
                 currentLine.Points.Add(position);
@@ -83,7 +81,7 @@ namespace DrawingApp
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
             selectedColor = (Color)e.NewValue;
-            selectedBrush = new SolidColorBrush(selectedColor);
+            
         }
 
         // Determine which radio button is selected
@@ -97,6 +95,19 @@ namespace DrawingApp
                 }
             }
             return null;
+        }
+        private void SetDot(Brush selectedbrush, Double thickness, Point position)
+        {
+            Ellipse currentDot = new()
+            {
+                Fill = selectedbrush,  // Use selected brush
+                Width = thickness,     // Width of the dot
+                Height = thickness     // Height of the dot (same as width for a perfect circle)
+            };
+
+            Canvas.SetLeft(currentDot, position.X - thickness / 2);
+            Canvas.SetTop(currentDot, position.Y - thickness / 2);
+            DrawingCanvas.Children.Add(currentDot);
         }
     }
 }
