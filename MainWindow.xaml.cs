@@ -16,7 +16,8 @@ namespace DrawingApp
         public MainWindow()
         {
             InitializeComponent();
-                
+            ToolBar toolbar = (ToolBar)this.FindName("Toolbar");
+
         }
         
         // Start drawing when the mouse button is pressed
