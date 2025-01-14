@@ -6,6 +6,7 @@ using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 using System.IO;
 using PeakyPaint;
+using System.Formats.Asn1;
 
 
 namespace DrawingApp
@@ -56,20 +57,20 @@ namespace DrawingApp
                 switch (button.Name)
                 {
                     case "LinearGradiant":
-                        currentLine = utensil.Line(new LinearGradientBrush(Colors.Red, Colors.Black, 45), thickness);
+                        selectedbrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45);
                         break;
-                    case "RadialGradient":
-                        currentLine = utensil.Line(new RadialGradientBrush(Colors.Red, Colors.Blue), thickness);
+                    case "RadialGradient":                                                      //moeten kleuren kunnen kiezen
+                        selectedbrush = new RadialGradientBrush(Colors.Red, Colors.Blue);
                         break;
                     case "Eraser":
-                        currentLine = utensil.Line(Brushes.White, thickness);
+                        selectedbrush = Brushes.White; //moet background colour zijn
                         break;
                     default:
-                        currentLine = utensil.Line(new SolidColorBrush(Colors.Black), thickness);
+                        selectedbrush = new SolidColorBrush(Colors.Black);
                         break;
 
                 }
-
+                currentLine = utensil.Line(selectedbrush, thickness);
                 SetDot(selectedbrush, thickness, position);
 
                 DrawingCanvas.Children.Add(currentLine); // Add line to canvas
@@ -88,7 +89,7 @@ namespace DrawingApp
             if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
             {
                 currentLine.Points.Add(position);
-                SetDot(selectedbrush, thickness, position);
+                //SetDot(selectedbrush, thickness, position);
 
             }
         }

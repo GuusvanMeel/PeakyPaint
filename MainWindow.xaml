@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Background="LightGray"
-        Title="Drawing App" Height="450" Width="800">
+        Title="Drawing App" Height="450" Width="800"
+         WindowState="Normal" WindowStyle="SingleBorderWindow">
 
 
 
@@ -95,12 +96,12 @@
 
             <!-- Drawing Area (Canvas) -->
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseEnter="DrawingCanvas_MouseEnter" MouseLeave="DrawingCanvas_MouseLeave" MouseUp="Canvas_MouseUp" Height="415" Width="800">
+                <Canvas Name="DrawingCanvas" Background="White" ClipToBounds="True" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseEnter="DrawingCanvas_MouseEnter" MouseLeave="DrawingCanvas_MouseLeave" MouseUp="Canvas_MouseUp" SnapsToDevicePixels="True">
                     <!-- The circle (or icon) that will follow the mouse -->
                     <Canvas.RenderTransform>
                         <ScaleTransform x:Name="CanvasScaleTransform" ScaleX="1" ScaleY="1"/>
-                    </Canvas.RenderTransform>
-                    
+                    </Canvas.RenderTransform>                   
+
                 </Canvas>
             </ScrollViewer>
 
