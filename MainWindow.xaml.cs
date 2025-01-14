@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 using System.IO;
+using Haley.Models;
 
 namespace DrawingApp
 {
@@ -12,8 +13,11 @@ namespace DrawingApp
     {
         private bool isDrawing = false; // Flag to track drawing state
         private Polyline? currentLine = null; // The current line being drawn
-        Color selectedColor = Colors.Black;
-        double zoomFactor = 1.0;
+        private Color selectedColor = Colors.Black;
+        private int thickness = 20;
+        private Brush selectedbrush = new SolidColorBrush(Colors.Black);
+        private Point position;
+        private double zoomFactor = 1.0;
 
         public MainWindow()
         {
@@ -23,14 +27,14 @@ namespace DrawingApp
 
         // Start drawing when the mouse button is pressed
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
-        {
+        {   
             isDrawing = true;
 
             if (e.ButtonState == MouseButtonState.Pressed)
             {
-                Brush selectedbrush = new SolidColorBrush(selectedColor);
-                int thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
-                var position = e.GetPosition(DrawingCanvas); // Get initial mouse position
+                selectedbrush = new SolidColorBrush(selectedColor);
+                
+                position = e.GetPosition(DrawingCanvas); // Get initial mouse position
 
                 RadioButton? button = WhatRadioButton();
                 if (button != null)
@@ -70,17 +74,23 @@ namespace DrawingApp
         // Draw the line while the mouse is moving
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
+            position = e.GetPosition(DrawingCanvas);
+
+           
+            Canvas.SetLeft(MouseIcon, position.X - MouseIcon.Width / 2);
+            Canvas.SetTop(MouseIcon, position.Y - MouseIcon.Height / 2);
             if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
             {
-                var position = e.GetPosition(DrawingCanvas);
+                
                 currentLine.Points.Add(position);
+                //SetDot(selectedbrush, thickness, position);
             }
         }
 
         // Stop drawing when the mouse button is released
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            isDrawing = false;
+            isDrawing = false;           
         }
 
         // Color Picker selection changed
@@ -314,5 +324,17 @@ namespace DrawingApp
     }
 
 
+        }
+
+        private void BrushSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MouseIcon != null)
+            {
+                thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
+                MouseIcon.Width = thickness;
+                MouseIcon.Height = thickness;
+            }
+        }
+    }
 }
 

@@ -27,7 +27,7 @@
             <ToolBarTray DockPanel.Dock="Top">
                 <ToolBar Name="Toolbar" Background="Beige" Height="41" Margin="0,0,-59,0">
                     <RadioButton Content="Paint Brush" IsChecked="True" Height="41" Width="78"/>
-                    <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="0">
+                    <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="0" SelectionChanged="BrushSizeComboBox_SelectionChanged">
                         <ComboBox.ItemsSource>
                             <x:Array Type="sys:Int32" xmlns:sys="clr-namespace:System;assembly=mscorlib">
                                 <sys:Int32>1</sys:Int32>
@@ -35,6 +35,51 @@
                                 <sys:Int32>3</sys:Int32>
                                 <sys:Int32>4</sys:Int32>
                                 <sys:Int32>5</sys:Int32>
+                                <sys:Int32>6</sys:Int32>
+                                <sys:Int32>7</sys:Int32>
+                                <sys:Int32>8</sys:Int32>
+                                <sys:Int32>9</sys:Int32>
+                                <sys:Int32>10</sys:Int32>
+                                <sys:Int32>11</sys:Int32>
+                                <sys:Int32>12</sys:Int32>
+                                <sys:Int32>13</sys:Int32>
+                                <sys:Int32>14</sys:Int32>
+                                <sys:Int32>15</sys:Int32>
+                                <sys:Int32>16</sys:Int32>
+                                <sys:Int32>17</sys:Int32>
+                                <sys:Int32>18</sys:Int32>
+                                <sys:Int32>19</sys:Int32>
+                                <sys:Int32>20</sys:Int32>
+                                <sys:Int32>21</sys:Int32>
+                                <sys:Int32>22</sys:Int32>
+                                <sys:Int32>23</sys:Int32>
+                                <sys:Int32>24</sys:Int32>
+                                <sys:Int32>25</sys:Int32>
+                                <sys:Int32>26</sys:Int32>
+                                <sys:Int32>27</sys:Int32>
+                                <sys:Int32>28</sys:Int32>
+                                <sys:Int32>29</sys:Int32>
+                                <sys:Int32>30</sys:Int32>
+                                <sys:Int32>31</sys:Int32>
+                                <sys:Int32>32</sys:Int32>
+                                <sys:Int32>33</sys:Int32>
+                                <sys:Int32>34</sys:Int32>
+                                <sys:Int32>35</sys:Int32>
+                                <sys:Int32>36</sys:Int32>
+                                <sys:Int32>37</sys:Int32>
+                                <sys:Int32>38</sys:Int32>
+                                <sys:Int32>39</sys:Int32>
+                                <sys:Int32>40</sys:Int32>
+                                <sys:Int32>41</sys:Int32>
+                                <sys:Int32>42</sys:Int32>
+                                <sys:Int32>43</sys:Int32>
+                                <sys:Int32>44</sys:Int32>
+                                <sys:Int32>45</sys:Int32>
+                                <sys:Int32>46</sys:Int32>
+                                <sys:Int32>47</sys:Int32>
+                                <sys:Int32>48</sys:Int32>
+                                <sys:Int32>49</sys:Int32>
+                                <sys:Int32>50</sys:Int32>
                             </x:Array>
                         </ComboBox.ItemsSource>
                     </ComboBox>
@@ -50,11 +95,10 @@
             </ToolBarTray>
 
             <!-- Drawing Area (Canvas) -->
-            <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" CanContentScroll="False">
-                <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" Width="448" Height="285">
-                    <Canvas.RenderTransform>
-                        <ScaleTransform x:Name="CanvasScaleTransform" ScaleX="1" ScaleY="1"/>
-                    </Canvas.RenderTransform>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" Height="415" Width="800">
+                    <!-- The circle (or icon) that will follow the mouse -->
+                    <Ellipse Name="MouseIcon" Fill="Red" Width="20" Height="20" Opacity="0.3"/>
                 </Canvas>
             </ScrollViewer>
 
