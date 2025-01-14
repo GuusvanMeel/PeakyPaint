@@ -98,6 +98,9 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                 <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" Height="415" Width="800">
                     <!-- The circle (or icon) that will follow the mouse -->
+                    <Canvas.RenderTransform>
+                        <ScaleTransform x:Name="CanvasScaleTransform" ScaleX="1" ScaleY="1"/>
+                    </Canvas.RenderTransform>
                     <Ellipse Name="MouseIcon" Fill="Red" Width="20" Height="20" Opacity="0.3"/>
                 </Canvas>
             </ScrollViewer>
