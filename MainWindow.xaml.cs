@@ -5,8 +5,8 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 using System.IO;
-using Haley.Models;
 using PeakyPaint;
+
 
 namespace DrawingApp
 {
@@ -18,11 +18,25 @@ namespace DrawingApp
         private int thickness = 20;
         private Brush selectedbrush = new SolidColorBrush(Colors.Black);
         private Point position;
+        private double zoomFactor = 1.0;
         private DrawingUtensil utensil;
+        private Ellipse MouseIcon; // Declare the MouseIcon ellipse
+
         public MainWindow()
         {
             InitializeComponent();
             utensil = new(DrawingCanvas);
+            // Create the MouseIcon ellipse
+            MouseIcon = new Ellipse
+            {
+                Fill = new SolidColorBrush(Colors.Red),
+                Width = 20,
+                Height = 20,
+                Opacity = 0.2
+            };
+
+            // Add the ellipse to the Canvas
+            DrawingCanvas.Children.Add(MouseIcon);
 
         }
 
@@ -97,7 +111,6 @@ namespace DrawingApp
             {
                 selectedColor = e.NewValue.Value;
             }
-
         }
 
         // Determine which radio button is selected
@@ -118,18 +131,65 @@ namespace DrawingApp
             };
             return defaultButton;
         }
-        private void SetDot(Brush selectedbrush, Double thickness, Point position)
+
+        private void SetDot(Brush selectedbrush, double thickness, Point position)
         {
             Ellipse currentDot = new()
             {
-                Fill = selectedbrush,  // Use selected brush
-                Width = thickness,     // Width of the dot
-                Height = thickness     // Height of the dot (same as width for a perfect circle)
+                Fill = selectedbrush,
+                Width = thickness,
+                Height = thickness
             };
 
             Canvas.SetLeft(currentDot, position.X - thickness / 2);
             Canvas.SetTop(currentDot, position.Y - thickness / 2);
             DrawingCanvas.Children.Add(currentDot);
+        }
+
+
+
+    
+
+
+        // Zoom In
+        private void ZoomIn()
+        {
+            zoomFactor *= 1.1;
+            UpdateCanvasZoom();
+        }
+
+
+        // Zoom Out
+        private void ZoomOut()
+        {
+            zoomFactor /= 1.1;
+            UpdateCanvasZoom();
+        }
+        private void UpdateCanvasZoom()
+        {
+            CanvasScaleTransform.ScaleX = zoomFactor;
+            CanvasScaleTransform.ScaleY = zoomFactor;
+        }
+
+       
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SliderValueText.Text = $"Zoom: {Math.Round(e.NewValue * 100)}%";
+            if (CanvasScaleTransform != null)
+            {
+                CanvasScaleTransform.ScaleX = e.NewValue;
+                CanvasScaleTransform.ScaleY = e.NewValue;
+            }
+               
+        }
+        private void BrushSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MouseIcon != null)
+            {
+                thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
+                MouseIcon.Width = thickness;
+                MouseIcon.Height = thickness;
+            }
         }
         private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -206,17 +266,65 @@ namespace DrawingApp
                 double cropOffset = 0; // This should match the saved offset
                 Canvas.SetTop(imageControl, cropOffset); // Place the image 100px from the top of the Canvas
                 DrawingCanvas.Children.Add(imageControl);
+                MouseIcon = new Ellipse
+                {
+                    Fill = new SolidColorBrush(Colors.Red),
+                    Width = 20,
+                    Height = 20,
+                    Opacity = 0.2
+                };
+                DrawingCanvas.Children.Add(MouseIcon);
+                
             }
         }
 
-        private void BrushSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ExportMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (MouseIcon != null)
+            // Define the size of the area to capture (same size as the Canvas)
+            double width = DrawingCanvas.ActualWidth;
+            double height = DrawingCanvas.ActualHeight;
+
+
+            // Create a RenderTargetBitmap to render the Canvas content into a bitmap
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(
+                (int)width, (int)height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+
+            // Render the Canvas into the bitmap
+            renderTargetBitmap.Render(DrawingCanvas);
+
+            // Show a SaveFileDialog to choose where to save the file
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
             {
-                thickness = Convert.ToInt32(BrushSizeComboBox.SelectedItem);
-                MouseIcon.Width = thickness;
-                MouseIcon.Height = thickness;
+                Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                // Create a file stream to save the image to
+                using (System.IO.FileStream fs = new System.IO.FileStream(saveFileDialog.FileName, System.IO.FileMode.Create))
+                {
+                    // Choose the appropriate encoder based on the file extension
+                    BitmapEncoder encoder = saveFileDialog.FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
+                        ? new PngBitmapEncoder()
+                        : new BmpBitmapEncoder();
+
+                    // Add the frame (image) to the encoder
+                    encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+                    // Save the image to the selected file
+                    encoder.Save(fs);
+                }
             }
+        }
+
+        private void DrawingCanvas_MouseLeave(object sender, MouseEventArgs e)
+        {
+            MouseIcon.Visibility = Visibility.Collapsed;
+        }
+
+        private void DrawingCanvas_MouseEnter(object sender, MouseEventArgs e)
+        {
+            MouseIcon.Visibility = Visibility.Visible;
         }
     }
 }
