@@ -6,6 +6,7 @@ using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 using System.IO;
 using PeakyPaint;
+using System.Configuration;
 using System.Formats.Asn1;
 
 
@@ -22,6 +23,7 @@ namespace DrawingApp
         private double zoomFactor = 1.0;
         private DrawingUtensil utensil;
         private Ellipse MouseIcon; // Declare the MouseIcon ellipse
+        private Cloudsaves cloudsaves = new Cloudsaves();
 
         public MainWindow()
         {
@@ -296,7 +298,7 @@ namespace DrawingApp
             // Show a SaveFileDialog to choose where to save the file
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
             {
-                Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg"
+                Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg|AVIF Files (*.avif)|*.avif"
             };
 
             if (saveFileDialog.ShowDialog() == true)
@@ -318,14 +320,75 @@ namespace DrawingApp
             }
         }
 
+        private async Task SaveMenuItem_Click()
+        {
+            try
+            {
+                // Get the actual width and height of the Canvas
+                double canvasWidth = DrawingCanvas.ActualWidth;
+                double canvasHeight = DrawingCanvas.ActualHeight;
+
+                // Define a temp file path
+                string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"temp_file.bmp");
+
+                // Create a RenderTargetBitmap to capture the Canvas area
+                RenderTargetBitmap renderTargetBitmap = new(
+                    (int)canvasWidth,
+                    (int)canvasHeight,
+                    96, 96, PixelFormats.Pbgra32);
+
+                // Render only the Canvas content (no toolbar or surrounding UI)
+                renderTargetBitmap.Render(DrawingCanvas);
+
+                // Save to a memory stream
+                using MemoryStream memoryStream = new();
+                BitmapEncoder encoder = new BmpBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+                // Save the frame into the memory stream
+                encoder.Save(memoryStream);
+
+                // Save the memory stream to the temp file
+                using (FileStream fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
+                {
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    memoryStream.CopyTo(fileStream);
+                }
+
+                // Confirm file exists
+                if (File.Exists(tempFilePath))
+                {
+                    MessageBox.Show($"File saved to: {tempFilePath}");
+                }
+                else
+                {
+                    throw new FileNotFoundException("Temp file was not created.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving file: {ex.Message}");
+            }
+        }
+
+
+
         private void DrawingCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
             MouseIcon.Visibility = Visibility.Collapsed;
+            DrawingCanvas.MouseDown -= Canvas_MouseDown;
         }
 
         private void DrawingCanvas_MouseEnter(object sender, MouseEventArgs e)
         {
             MouseIcon.Visibility = Visibility.Visible;
+            DrawingCanvas.MouseDown += Canvas_MouseDown;
+        }
+
+        private async void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            await SaveMenuItem_Click();
+            cloudsaves.UploadButton_Click(sender, e);
         }
     }
 }

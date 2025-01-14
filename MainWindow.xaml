@@ -17,10 +17,23 @@
                     <MenuItem Header="Load File" Click="LoadMenuItem_Click"/>
                     <MenuItem Header="Export" Click="ExportMenuItem_Click"/>
                 </MenuItem>
-                <MenuItem Header="Join" HorizontalAlignment="Left" Width="33">
+                <MenuItem Header="Join" HorizontalAlignment="Left" Width="auto">
                     <MenuItem Header="Room1"/>
                     <MenuItem Header="Room2"/>
                     <MenuItem Header="Room3"/>
+                </MenuItem>
+                <MenuItem Header="Settings" HorizontalAlignment="Left" Width="auto">
+                    <MenuItem Header="Room1"/>
+                    <MenuItem Header="Room2"/>
+                    <MenuItem Header="Room3"/>
+                </MenuItem>
+                
+                <MenuItem Header="Chat" HorizontalAlignment="Left" Width="auto">
+                    <MenuItem Header="Room1"/>
+                    <MenuItem Header="Room2"/>
+                    <MenuItem Header="Room3"/>
+                </MenuItem>
+                <MenuItem Header="Send" Background="MediumSlateBlue"  HorizontalAlignment="Left" Click="MenuItem_Click"  Width="auto">
                 </MenuItem>
             </Menu>
 
