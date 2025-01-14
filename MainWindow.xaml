@@ -23,7 +23,7 @@
             <ToolBarTray DockPanel.Dock="Top">
                 <ToolBar Name="Toolbar" Background="Beige" Height="41">
                     <RadioButton Content="Paint Brush" IsChecked="True" Height="41" Width="78"/>
-                    <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="0" SelectionChanged="BrushSizeComboBox_SelectionChanged">
+                    <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="19" SelectionChanged="BrushSizeComboBox_SelectionChanged">
                         <ComboBox.ItemsSource>
                             <x:Array Type="sys:Int32" xmlns:sys="clr-namespace:System;assembly=mscorlib">
                                 <sys:Int32>1</sys:Int32>
@@ -79,7 +79,6 @@
                             </x:Array>
                         </ComboBox.ItemsSource>
                     </ComboBox>
-                    <RadioButton Content="Pencil" Height="41" Width="78"/>
                     <RadioButton Content="LinearGradient" Name="LinearGradiant" Height="41" Width="78"/>
                     <RadioButton Content="RadialGradient" Name="RadialGradient" Height="41" Width="78"/>
                     <RadioButton Content="Eraser" Name="Eraser" Height="41" Width="78"/>
@@ -91,7 +90,7 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                 <Canvas Name="DrawingCanvas" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" Height="415" Width="800">
                     <!-- The circle (or icon) that will follow the mouse -->
-                    <Ellipse Name="MouseIcon" Fill="Red" Width="20" Height="20" Opacity="0.3"/>
+                    <Ellipse Name="MouseIcon" Fill="Red" Width="20" Height="20" Opacity="0.2"/>
                 </Canvas>
             </ScrollViewer>
         </DockPanel>

@@ -3,60 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Ink;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace PeakyPaint
 {
     
     class DrawingUtensil
     {
-        public Brush? Brush { get; set; }
+        public Brush Brush { get; set; }
         
         public double Thickness { get; set; }
+        private Canvas canvas;
 
-        // Constructor for SolidColorBrush or other Brush types
-        public DrawingUtensil(Brush brush, double thickness)
+      public DrawingUtensil(Canvas _canvas)
         {
-            this.Brush = brush;
-            this.Thickness = thickness;
+            canvas = _canvas;
+            Brush = new SolidColorBrush();
         }
+        public Polyline Line(Brush brush, int thickness)
+        {
+            Polyline line = new Polyline
+            {
+                Stroke = brush,
+                StrokeThickness = thickness
+            };
 
-        // Constructor for LinearGradientBrush
-        public DrawingUtensil(LinearGradientBrush gradient, double thickness)
-        {
-           
-            this.Thickness = thickness;
-            this.Brush = gradient; // This ensures Brush is also set, as LinearGradientBrush is a subclass of 
-        }
 
-        // Constructor for RadialGradientBrush
-        public DrawingUtensil(RadialGradientBrush gradient, double thickness)
-        {
-            
-            this.Thickness = thickness;
-            this.Brush = gradient; // This ensures Brush is also set, as RadialGradientBrush is a subclass of Brush
+            return line;
         }
-
-        // Constructor for ImageBrush
-        public DrawingUtensil(ImageBrush imageBrush, double thickness)
-        {
-            this.Brush = imageBrush; // ImageBrush inherits from Brush
-            this.Thickness = thickness;
-        }
-
-        // Constructor for DrawingBrush
-        public DrawingUtensil(DrawingBrush drawingBrush, double thickness)
-        {
-            this.Brush = drawingBrush; // DrawingBrush inherits from Brush
-            this.Thickness = thickness;
-        }
-
-        // Constructor for VisualBrush
-        public DrawingUtensil(VisualBrush visualBrush, double thickness)
-        {
-            this.Brush = visualBrush; // VisualBrush inherits from Brush
-            this.Thickness = thickness;
-        }
-     
+       
     }
 }

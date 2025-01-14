@@ -6,6 +6,7 @@ using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 using System.IO;
 using Haley.Models;
+using PeakyPaint;
 
 namespace DrawingApp
 {
@@ -17,78 +18,76 @@ namespace DrawingApp
         private int thickness = 20;
         private Brush selectedbrush = new SolidColorBrush(Colors.Black);
         private Point position;
-
+        private DrawingUtensil utensil;
         public MainWindow()
         {
             InitializeComponent();
+            utensil = new(DrawingCanvas);
+
         }
 
         // Start drawing when the mouse button is pressed
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
-        {   
+        {
             isDrawing = true;
 
             if (e.ButtonState == MouseButtonState.Pressed)
             {
-                selectedbrush = new SolidColorBrush(selectedColor);
-                
+
+
                 position = e.GetPosition(DrawingCanvas); // Get initial mouse position
 
-                RadioButton? button = WhatRadioButton();
-                if (button != null)
+                RadioButton button = WhatRadioButton();
+
+                switch (button.Name)
                 {
-                    switch (button.Name)
-                    {
-                        case "LinearGradiant":
-                            selectedbrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45); //HIER OOK KLEURENPICKER
-                            break;
-                        case "RadialGradient":
-                            selectedbrush = new RadialGradientBrush(Colors.Red, Colors.Blue); // JE HEBT EEN KLEURENPICKER VOOR DIT NODIG
-                            break;
-                        case "Eraser":
-                            selectedbrush = Brushes.White; //MOET VERANDEREN IN BACKGROUND COLOUR NIET WIT
-                            break;
+                    case "LinearGradiant":
+                        currentLine = utensil.Line(new LinearGradientBrush(Colors.Red, Colors.Black, 45), thickness);
+                        break;
+                    case "RadialGradient":
+                        currentLine = utensil.Line(new RadialGradientBrush(Colors.Red, Colors.Blue), thickness);
+                        break;
+                    case "Eraser":
+                        currentLine = utensil.Line(Brushes.White, thickness);
+                        break;
+                    default:
+                        currentLine = utensil.Line(new SolidColorBrush(Colors.Black), thickness);
+                        break;
 
-
-
-                    }
                 }
-                
+
                 SetDot(selectedbrush, thickness, position);
 
-                currentLine = new Polyline
-                {
-                    Stroke = selectedbrush,
-                    StrokeThickness = thickness
-                };
-                
                 DrawingCanvas.Children.Add(currentLine); // Add line to canvas
-              
-                
+
                 currentLine.Points.Add(position);  // Add first point to the line
             }
         }
 
-        // Draw the line while the mouse is moving
+
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             position = e.GetPosition(DrawingCanvas);
-
-           
             Canvas.SetLeft(MouseIcon, position.X - MouseIcon.Width / 2);
             Canvas.SetTop(MouseIcon, position.Y - MouseIcon.Height / 2);
+
             if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
             {
-                
                 currentLine.Points.Add(position);
-                //SetDot(selectedbrush, thickness, position);
+                SetDot(selectedbrush, thickness, position);
+
             }
         }
 
         // Stop drawing when the mouse button is released
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            isDrawing = false;           
+            isDrawing = false;
+            if (selectedbrush.GetType() == typeof(SolidColorBrush))
+            {
+                SetDot(selectedbrush, thickness, position);
+            }
+
         }
 
         // Color Picker selection changed
@@ -96,7 +95,7 @@ namespace DrawingApp
         {
             if (e.NewValue.HasValue)
             {
-                selectedColor = e.NewValue.Value; 
+                selectedColor = e.NewValue.Value;
             }
 
         }
@@ -111,7 +110,13 @@ namespace DrawingApp
                     return radioButton;
                 }
             }
-            return null;
+            // Dynamically create a RadioButton for SolidColorBrush (if no other is checked)
+            RadioButton defaultButton = new RadioButton
+            {
+                Name = "SolidcolorBrush",
+                Content = "SolidcolorBrush"
+            };
+            return defaultButton;
         }
         private void SetDot(Brush selectedbrush, Double thickness, Point position)
         {
@@ -133,7 +138,7 @@ namespace DrawingApp
             double canvasHeight = DrawingCanvas.ActualHeight;
 
             // Create a RenderTargetBitmap to capture the Canvas area
-            RenderTargetBitmap renderTargetBitmap = new (
+            RenderTargetBitmap renderTargetBitmap = new(
                 (int)canvasWidth,
                 (int)canvasHeight,
                 96, 96, PixelFormats.Pbgra32);
@@ -142,7 +147,7 @@ namespace DrawingApp
             renderTargetBitmap.Render(DrawingCanvas);
 
             // Save to a memory stream
-            using MemoryStream memoryStream = new ();
+            using MemoryStream memoryStream = new();
             BitmapEncoder encoder = new BmpBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
 
@@ -151,8 +156,8 @@ namespace DrawingApp
 
             // Convert to System.Drawing.Bitmap
             memoryStream.Seek(0, SeekOrigin.Begin);
-            using System.Drawing.Bitmap bitmap = new (memoryStream);
-            Microsoft.Win32.SaveFileDialog saveFileDialog = new ()
+            using System.Drawing.Bitmap bitmap = new(memoryStream);
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new()
             {
                 Filter = "Bitmap Files (*.bmp)|*.bmp"
             };
@@ -166,7 +171,7 @@ namespace DrawingApp
         private void LoadMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // Open a file dialog to select the saved bitmap
-            Microsoft.Win32.OpenFileDialog openFileDialog = new ()
+            Microsoft.Win32.OpenFileDialog openFileDialog = new()
             {
                 Filter = "Bitmap Files (*.bmp)|*.bmp"
             };
@@ -175,11 +180,11 @@ namespace DrawingApp
             {
                 // Load the selected bitmap from the file
                 string filePath = openFileDialog.FileName;
-                System.Drawing.Bitmap loadedBitmap = new (filePath);
+                System.Drawing.Bitmap loadedBitmap = new(filePath);
 
                 // Convert the System.Drawing.Bitmap to a WPF BitmapImage
-                BitmapImage bitmapImage = new ();
-                using (MemoryStream memoryStream = new ())
+                BitmapImage bitmapImage = new();
+                using (MemoryStream memoryStream = new())
                 {
                     loadedBitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
                     memoryStream.Seek(0, SeekOrigin.Begin);
@@ -191,7 +196,7 @@ namespace DrawingApp
                 }
 
                 // Create an Image control to display the loaded bitmap
-                Image imageControl = new ()
+                Image imageControl = new()
                 {
                     Source = bitmapImage,
                     Stretch = Stretch.None
