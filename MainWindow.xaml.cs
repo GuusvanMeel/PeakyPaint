@@ -269,6 +269,8 @@ namespace DrawingApp
             RenderTargetBitmap renderTargetBitmap = new (
                 (int)width, (int)height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
 
+            MouseIcon.Visibility = Visibility.Collapsed;
+
             // Render the Canvas into the bitmap
             renderTargetBitmap.Render(DrawingCanvas);
 
@@ -295,7 +297,7 @@ namespace DrawingApp
             }
         }
 
-        private async Task SaveMenuItem_Click()
+        private async Task SaveMenuItem_Click(string filepath)
         {
             try
             {
@@ -304,7 +306,7 @@ namespace DrawingApp
                 double canvasHeight = DrawingCanvas.ActualHeight;
 
                 // Define a temp file path
-                string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"temp_file.bmp");
+                string tempFilePath = filepath;
 
                 // Create a RenderTargetBitmap to capture the Canvas area
                 RenderTargetBitmap renderTargetBitmap = new(
@@ -344,6 +346,7 @@ namespace DrawingApp
             {
                 MessageBox.Show($"Error saving file: {ex.Message}");
             }
+            MouseIcon.Visibility = Visibility.Visible;
         }
 
 
@@ -362,8 +365,14 @@ namespace DrawingApp
 
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            await SaveMenuItem_Click();
-            cloudsaves.UploadButton_Click(sender, e);
+            string filepath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "temp_file.png");
+
+            // Save the menu item
+            await SaveMenuItem_Click(filepath);
+
+            // Upload to cloud saves and export icon
+            //cloudsaves.UploadButton_Click(sender, e, filepath);
+            await cloudsaves.ExportIcon(DrawingCanvas, filepath);
         }
         private void ChangeColor(Color color)
         {
