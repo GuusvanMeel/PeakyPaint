@@ -18,27 +18,27 @@ namespace PeakyPaint
         private string nextcloudUrl = "http://192.168.128.149/remote.php/dav/files/admin/Peakypaint/Global/";
         private string username = "admin";
         private string password = "Welkom123!";
-        public async void UploadButton_Click(object sender, RoutedEventArgs e)
+        public async void UploadButton_Click(object sender, RoutedEventArgs e, string _filepath)
         {
-            // Show a file dialog to select the file
-            //Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            //if (openFileDialog.ShowDialog() == true)
-            //{
-            //string filePath = openFileDialog.FileName;
-                string filePath = Path.Combine(Path.GetTempPath(), $"temp_file.bmp");
+
+                string filePath = _filepath;
                 string fileName = Path.GetFileName(filePath);
 
                 try
                 {
                     // Upload the file
                     await UploadFileToNextcloud(filePath, fileName);
-                }
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+            }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Error uploading file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-        //}
+
 
         private async Task UploadFileToNextcloud(string localFilePath, string remoteFileName)
         {
@@ -74,43 +74,46 @@ namespace PeakyPaint
                 MessageBox.Show($"Exception occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        private void ExportPreview_Click(Canvas DrawingCanvas)
+
+        public async Task ExportIcon(Canvas DrawingCanvas, string _filepath)
         {
-            // Define the desired preview dimensions (e.g., 200x200 pixels)
-            int previewWidth = (int)DrawingCanvas.Width;
-            int previewHeight = (int)DrawingCanvas.Height;
+            // Use ActualWidth and ActualHeight to ensure proper dimensions
+            int previewWidth = (int)DrawingCanvas.ActualWidth;
+            int previewHeight = (int)DrawingCanvas.ActualHeight;
+
+            if (previewWidth <= 0 || previewHeight <= 0)
+            {
+                MessageBox.Show("Canvas dimensions are invalid. Ensure the Canvas has been rendered.");
+                return;
+            }
 
             // Create a RenderTargetBitmap to render the Canvas content
             RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(
                 previewWidth, previewHeight, 96, 96, PixelFormats.Pbgra32);
 
+            // Ensure the Canvas is properly measured and arranged
+            DrawingCanvas.Measure(new Size(previewWidth, previewHeight));
+            DrawingCanvas.Arrange(new Rect(0, 0, previewWidth, previewHeight));
+
             // Render the Canvas into the bitmap
-            DrawingCanvas.Measure(new Size(DrawingCanvas.ActualWidth, DrawingCanvas.ActualHeight));
-            DrawingCanvas.Arrange(new Rect(0, 0, DrawingCanvas.ActualWidth, DrawingCanvas.ActualHeight));
             renderTargetBitmap.Render(DrawingCanvas);
 
-            // Show a SaveFileDialog to choose where to save the preview
-            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg"
-            };
+            // Save the image to the file
+            using FileStream fs = new FileStream(_filepath, FileMode.Create);
+            BitmapEncoder encoder = _filepath.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
+                ? new PngBitmapEncoder()
+                : new JpegBitmapEncoder { QualityLevel = 50 };
 
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                using FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create);
+            // Add the frame (image) to the encoder
+            encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
 
-                // Use a compressed format like JPEG
-                BitmapEncoder encoder = saveFileDialog.FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
-                    ? new PngBitmapEncoder()
-                    : new JpegBitmapEncoder { QualityLevel = 50 }; // Lower quality for smaller file size
+            // Save the image
+            encoder.Save(fs);
 
-                // Add the frame (image) to the encoder
-                encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
-
-                // Save the image to the selected file
-                encoder.Save(fs);
-            }
+            // Upload the file
+            //await UploadFileToNextcloud(_filepath, _filepath); //tyfus netlab is dood
         }
 
     }
+
 }
