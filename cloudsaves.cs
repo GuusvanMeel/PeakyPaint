@@ -15,10 +15,10 @@ namespace PeakyPaint
 {
     internal class Cloudsaves
     {
-        private string nextcloudUrl = "http://192.168.128.149/remote.php/dav/files/admin/Peakypaint/Global/";
+        public string nextcloudUrl = "http://192.168.128.149/remote.php/dav/files/admin/Peakypaint/Global/";
         private string username = "admin";
         private string password = "Welkom123!";
-        public async void UploadButton_Click(object sender, RoutedEventArgs e, string _filepath)
+        public async Task UploadButton_Click(object sender, RoutedEventArgs e, string _filepath)
         {
 
                 string filePath = _filepath;
@@ -40,7 +40,7 @@ namespace PeakyPaint
             }
 
 
-        private async Task UploadFileToNextcloud(string localFilePath, string remoteFileName)
+        public async Task UploadFileToNextcloud(string localFilePath, string remoteFileName)
         {
             string remoteUrl = $"{nextcloudUrl}{remoteFileName}";
 
@@ -111,7 +111,7 @@ namespace PeakyPaint
             encoder.Save(fs);
 
             // Upload the file
-            //await UploadFileToNextcloud(_filepath, _filepath); //tyfus netlab is dood
+            
         }
 
     }

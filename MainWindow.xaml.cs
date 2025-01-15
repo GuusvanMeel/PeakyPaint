@@ -19,10 +19,11 @@ namespace DrawingApp
         private Color selectedColor = Colors.Black;
         private int thickness = 20;
         private Brush selectedbrush = new SolidColorBrush(Colors.Black);
-        private Point position;        
+        private Point position;
+        private double zoomFactor = 1.0;
         private DrawingUtensil utensil;
         private Ellipse MouseIcon; // Declare the MouseIcon ellipse
-        private Cloudsaves cloudsaves = new ();
+        private Cloudsaves cloudsaves = new Cloudsaves();
 
         public MainWindow()
         {
@@ -55,7 +56,7 @@ namespace DrawingApp
 
                 RadioButton button = WhatRadioButton();
 
-                switch(button.Name)
+                switch (button.Name)
                 {
                     case "LinearGradiant":
                         selectedbrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45);
@@ -67,7 +68,7 @@ namespace DrawingApp
                         selectedbrush = Brushes.White; //moet background colour zijn
                         break;
                     default:
-                        selectedbrush = new SolidColorBrush(selectedColor);
+                        selectedbrush = new SolidColorBrush(Colors.Black);
                         break;
 
                 }
@@ -109,17 +110,14 @@ namespace DrawingApp
         // Color Picker selection changed
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            
             if (e.NewValue.HasValue)
             {
-                
                 selectedColor = e.NewValue.Value;
-                ChangeColorButtons();
             }
         }
 
         // Determine which radio button is selected
-        private RadioButton WhatRadioButton()
+        private RadioButton? WhatRadioButton()
         {
             foreach (var child in TopToolbar.Items)
             {
@@ -128,8 +126,8 @@ namespace DrawingApp
                     return radioButton;
                 }
             }
-            
-            RadioButton defaultButton = new()
+            // Dynamically create a RadioButton for SolidColorBrush (if no other is checked)
+            RadioButton defaultButton = new RadioButton
             {
                 Name = "SolidcolorBrush",
                 Content = "SolidcolorBrush"
@@ -149,7 +147,32 @@ namespace DrawingApp
             Canvas.SetLeft(currentDot, position.X - thickness / 2);
             Canvas.SetTop(currentDot, position.Y - thickness / 2);
             DrawingCanvas.Children.Add(currentDot);
-        } 
+        }
+
+
+
+    
+
+
+        // Zoom In
+        private void ZoomIn()
+        {
+            zoomFactor *= 1.1;
+            UpdateCanvasZoom();
+        }
+
+
+        // Zoom Out
+        private void ZoomOut()
+        {
+            zoomFactor /= 1.1;
+            UpdateCanvasZoom();
+        }
+        private void UpdateCanvasZoom()
+        {
+            CanvasScaleTransform.ScaleX = zoomFactor;
+            CanvasScaleTransform.ScaleY = zoomFactor;
+        }
 
        
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -266,7 +289,7 @@ namespace DrawingApp
 
 
             // Create a RenderTargetBitmap to render the Canvas content into a bitmap
-            RenderTargetBitmap renderTargetBitmap = new (
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(
                 (int)width, (int)height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
 
             MouseIcon.Visibility = Visibility.Collapsed;
@@ -275,7 +298,7 @@ namespace DrawingApp
             renderTargetBitmap.Render(DrawingCanvas);
 
             // Show a SaveFileDialog to choose where to save the file
-            Microsoft.Win32.SaveFileDialog saveFileDialog = new()
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg|AVIF Files (*.avif)|*.avif"
             };
@@ -283,17 +306,19 @@ namespace DrawingApp
             if (saveFileDialog.ShowDialog() == true)
             {
                 // Create a file stream to save the image to
-                using System.IO.FileStream fs = new(saveFileDialog.FileName, System.IO.FileMode.Create);
-                // Choose the appropriate encoder based on the file extension
-                BitmapEncoder encoder = saveFileDialog.FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
-                    ? new PngBitmapEncoder()
-                    : new BmpBitmapEncoder();
+                using (System.IO.FileStream fs = new System.IO.FileStream(saveFileDialog.FileName, System.IO.FileMode.Create))
+                {
+                    // Choose the appropriate encoder based on the file extension
+                    BitmapEncoder encoder = saveFileDialog.FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
+                        ? new PngBitmapEncoder()
+                        : new BmpBitmapEncoder();
 
-                // Add the frame (image) to the encoder
-                encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+                    // Add the frame (image) to the encoder
+                    encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
 
-                // Save the image to the selected file
-                encoder.Save(fs);
+                    // Save the image to the selected file
+                    encoder.Save(fs);
+                }
             }
         }
 
@@ -326,7 +351,7 @@ namespace DrawingApp
                 encoder.Save(memoryStream);
 
                 // Save the memory stream to the temp file
-                using (FileStream fileStream = new(tempFilePath, FileMode.Create, FileAccess.Write))
+                using (FileStream fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
                 {
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     memoryStream.CopyTo(fileStream);
@@ -365,21 +390,26 @@ namespace DrawingApp
 
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            string filepath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "temp_file.png");
+            string filepath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "temp_file.bmp");
+            string iconFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "temp_file.jpg");
 
             // Save the menu item
             await SaveMenuItem_Click(filepath);
 
             // Upload to cloud saves and export icon
-            //cloudsaves.UploadButton_Click(sender, e, filepath);
-            await cloudsaves.ExportIcon(DrawingCanvas, filepath);
+            await cloudsaves.UploadButton_Click(sender, e, filepath);
+            await cloudsaves.ExportIcon(DrawingCanvas, iconFilePath);
+            await cloudsaves.UploadFileToNextcloud(iconFilePath, System.IO.Path.GetFileName(iconFilePath));
         }
-        private void ChangeColor(Color color)
+
+    
+
+    private void ChangeColor(Color color)
         {
-            
+
             selectedColor = color;
             ChangeColorButtons();
-            
+
         }
         private void ChangeColorButtons()
         {
@@ -389,7 +419,7 @@ namespace DrawingApp
             CurrentColorButton.Background = new SolidColorBrush(selectedColor);
             CurrentColorButton.Tag = selectedColor;
             TextColor(selectedColor, CurrentColorButton);
-           
+
         }
         private void TextColor(Color color, Button button)
         {
@@ -439,4 +469,4 @@ namespace DrawingApp
             downloadWindow.Show();
         }
     }
-    }
+}
