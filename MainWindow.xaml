@@ -57,7 +57,7 @@
         <!-- New ToolBar Tray -->
             <ToolBarTray DockPanel.Dock="Top">
                 <ToolBar Name="TopToolbar" Background="Beige" Height="41" Margin="0,0,-59,0">
-                    <RadioButton Content="Paint Brush" IsChecked="True" Height="41" Width="78"/>
+                    <RadioButton Content="Paint Brush"  Height="41" Width="78" Click="RadioButton_Click_1"/>
                     <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="19" SelectionChanged="BrushSizeComboBox_SelectionChanged">
                         <ComboBox.ItemsSource>
                             <x:Array Type="sys:Int32" xmlns:sys="clr-namespace:System;assembly=mscorlib">
@@ -114,9 +114,9 @@
                             </x:Array>
                         </ComboBox.ItemsSource>
                     </ComboBox>
-                    <RadioButton Content="LinearGradient" Name="LinearGradiant" Height="41" Width="78"/>
-                    <RadioButton Content="RadialGradient" Name="RadialGradient" Height="41" Width="78"/>
-                    <RadioButton Content="Eraser" Name="Eraser" Height="41" Width="78"/>
+                    <Button Content="LinearGradient" Name="LinearGradiant" Height="41" Width="78" Click="LinearGradiant_Click"/>
+                    <Button Content="RadialGradient" Name="RadialGradient" Height="41" Width="78" Click="RadialGradient_Click" />
+                    <RadioButton Content="Eraser" Name="Eraser" Height="41" Width="78" Click="RadioButton_Click_1"/>
                     <xctk:ColorPicker Name="ColorPicker" Height="30" Width="80" SelectedColor="Black" SelectedColorChanged="ColorPicker_SelectedColorChanged"/>
                     <TextBlock Name="SliderValueText" Text="Zoom: 100%" HorizontalAlignment="Left" VerticalAlignment="Center" Width="70" Margin="10,0,0,0" />
                     <Slider  VerticalAlignment="Center" Minimum="0.01" Maximum="3" Value="1" TickFrequency="0.01" ValueChanged="Slider_ValueChanged" Width="56" />

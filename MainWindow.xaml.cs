@@ -8,6 +8,7 @@ using System.IO;
 using PeakyPaint;
 using System.Configuration;
 using System.Formats.Asn1;
+using System.Diagnostics;
 
 
 namespace DrawingApp
@@ -19,10 +20,11 @@ namespace DrawingApp
         private Color selectedColor = Colors.Black;
         private int thickness = 20;
         private Brush selectedbrush = new SolidColorBrush(Colors.Black);
-        private Point position;        
+        private Point position;
         private DrawingUtensil utensil;
         private Ellipse MouseIcon; // Declare the MouseIcon ellipse
-        private Cloudsaves cloudsaves = new ();
+        private Cloudsaves cloudsaves = new();
+        public bool lastPressedRadio { get; set; }
 
         public MainWindow()
         {
@@ -52,24 +54,20 @@ namespace DrawingApp
 
 
                 position = e.GetPosition(DrawingCanvas); // Get initial mouse position
-
-                RadioButton button = WhatRadioButton();
-
-                switch(button.Name)
+                if (lastPressedRadio)
                 {
-                    case "LinearGradiant":
-                        selectedbrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45);
-                        break;
-                    case "RadialGradient":                                                      //moeten kleuren kunnen kiezen
-                        selectedbrush = new RadialGradientBrush(Colors.Red, Colors.Blue);
-                        break;
-                    case "Eraser":
-                        selectedbrush = Brushes.White; //moet background colour zijn
-                        break;
-                    default:
-                        selectedbrush = new SolidColorBrush(selectedColor);
-                        break;
+                    RadioButton button = WhatRadioButton();
 
+                    switch (button.Name)
+                    {
+                        case "Eraser":
+                            selectedbrush = Brushes.White; //moet background colour zijn
+                            break;
+                        default:
+                            selectedbrush = new SolidColorBrush(selectedColor);
+                            break;
+
+                    }
                 }
                 currentLine = utensil.Line(selectedbrush, thickness);
                 SetDot(selectedbrush, thickness, position);
@@ -78,6 +76,18 @@ namespace DrawingApp
 
                 currentLine.Points.Add(position);  // Add first point to the line
             }
+        }
+        public void GradientBrush(Color color1, Color color2, string button)
+        {
+            if (button == "LinearGradient")
+            {
+                selectedbrush = new LinearGradientBrush(color1, color2, 45);
+            }
+            else if (button == "RadialGradient")
+            {
+                selectedbrush = new RadialGradientBrush(color1, color2);
+            }
+
         }
 
 
@@ -109,10 +119,10 @@ namespace DrawingApp
         // Color Picker selection changed
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            
+
             if (e.NewValue.HasValue)
             {
-                
+
                 selectedColor = e.NewValue.Value;
                 ChangeColorButtons();
             }
@@ -128,7 +138,7 @@ namespace DrawingApp
                     return radioButton;
                 }
             }
-            
+
             RadioButton defaultButton = new()
             {
                 Name = "SolidcolorBrush",
@@ -149,9 +159,9 @@ namespace DrawingApp
             Canvas.SetLeft(currentDot, position.X - thickness / 2);
             Canvas.SetTop(currentDot, position.Y - thickness / 2);
             DrawingCanvas.Children.Add(currentDot);
-        } 
+        }
 
-       
+
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SliderValueText.Text = $"Zoom: {Math.Round(e.NewValue * 100)}%";
@@ -160,7 +170,7 @@ namespace DrawingApp
                 CanvasScaleTransform.ScaleX = e.NewValue;
                 CanvasScaleTransform.ScaleY = e.NewValue;
             }
-               
+
         }
         private void BrushSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -254,7 +264,7 @@ namespace DrawingApp
                     Opacity = 0.2
                 };
                 DrawingCanvas.Children.Add(MouseIcon);
-                
+
             }
         }
 
@@ -266,7 +276,7 @@ namespace DrawingApp
 
 
             // Create a RenderTargetBitmap to render the Canvas content into a bitmap
-            RenderTargetBitmap renderTargetBitmap = new (
+            RenderTargetBitmap renderTargetBitmap = new(
                 (int)width, (int)height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
 
             MouseIcon.Visibility = Visibility.Collapsed;
@@ -376,10 +386,10 @@ namespace DrawingApp
         }
         private void ChangeColor(Color color)
         {
-            
+
             selectedColor = color;
             ChangeColorButtons();
-            
+
         }
         private void ChangeColorButtons()
         {
@@ -389,7 +399,7 @@ namespace DrawingApp
             CurrentColorButton.Background = new SolidColorBrush(selectedColor);
             CurrentColorButton.Tag = selectedColor;
             TextColor(selectedColor, CurrentColorButton);
-           
+
         }
         private void TextColor(Color color, Button button)
         {
@@ -438,5 +448,29 @@ namespace DrawingApp
             DownloadWindow downloadWindow = new();
             downloadWindow.Show();
         }
+
+        private void LinearGradiant_Click(object sender, RoutedEventArgs e)
+        {
+            lastPressedRadio = false;
+            GoToPicker("LinearGradient");
+        }
+
+        private void RadialGradient_Click(object sender, RoutedEventArgs e)
+        {
+            lastPressedRadio = false;
+            GoToPicker("RadialGradient");
+        }
+        private void GoToPicker(string buttonname)
+        {
+            _2ColorPickerWIndow picker = new(buttonname, this);
+            picker.Show();
+        }
+
+
+
+        private void RadioButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            lastPressedRadio = true;
+        }
     }
-    }
+}
