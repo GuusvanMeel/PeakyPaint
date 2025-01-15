@@ -27,7 +27,7 @@
                     <MenuItem Header="Room2"/>
                     <MenuItem Header="Room3"/>
                 </MenuItem>
-                
+
                 <MenuItem Header="Chat" HorizontalAlignment="Left" Width="auto">
                     <MenuItem Header="Room1"/>
                     <MenuItem Header="Room2"/>
@@ -35,11 +35,26 @@
                 </MenuItem>
                 <MenuItem Header="Send" Background="MediumSlateBlue"  HorizontalAlignment="Left" Click="MenuItem_Click"  Width="auto">
                 </MenuItem>
-            </Menu>
 
-            <!-- New ToolBar Tray -->
+            </Menu>
+            <StackPanel DockPanel.Dock="Right" Width="100" Background="LightGray">
+                <Button Name="ButtonRed"  Background="Red" Tag="{x:Static Colors.Red}"  Click="ButtonRed_Click" Height="40" Margin="5"/>
+                <Button Name="ButtonBlue"  Background="Blue" Tag="{x:Static Colors.Blue}" Click="ButtonBlue_Click"  Height="40" Margin="5"/>
+                <Button Name="ButtonGreen"  Background="Green" Tag="{x:Static Colors.Green}" Click="ButtonGreen_Click"  Height="40" Margin="5"/>
+                <Button Name="ButtonYellow"  Background="Yellow" Tag="{x:Static Colors.Yellow}" Click="ButtonYellow_Click"  Height="40" Margin="5"/>
+                <Button Name="ButtonPurple"  Background="Purple" Tag="{x:Static Colors.Purple}" Click="ButtonPurple_Click"  Height="40" Margin="5"/>
+                <!-- Spacer to push the buttons to the bottom -->
+                <Button Name="CurrentColorButton" Content="Current" Background="White" Height="50" Tag="{x:Static Colors.White}" FontSize="15" Padding="15" Margin="3"/>
+                <Button Name="PreviousColorButton" Content="Previous" Click="PreviousColor_Click"  Background="White" Height="50" Tag="{x:Static Colors.White}" FontSize="15" Padding="15" Margin="3"/>
+
+            </StackPanel>           
+
+
+
+
+        <!-- New ToolBar Tray -->
             <ToolBarTray DockPanel.Dock="Top">
-                <ToolBar Name="Toolbar" Background="Beige" Height="41" Margin="0,0,-59,0">
+                <ToolBar Name="TopToolbar" Background="Beige" Height="41" Margin="0,0,-59,0">
                     <RadioButton Content="Paint Brush" IsChecked="True" Height="41" Width="78"/>
                     <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="19" SelectionChanged="BrushSizeComboBox_SelectionChanged">
                         <ComboBox.ItemsSource>
@@ -105,20 +120,22 @@
                     <Slider  VerticalAlignment="Center" Minimum="0.01" Maximum="3" Value="1" TickFrequency="0.01" ValueChanged="Slider_ValueChanged" Width="56" />
 
                 </ToolBar>
+
             </ToolBarTray>
 
             <!-- Drawing Area (Canvas) -->
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <Canvas Name="DrawingCanvas" Background="White" ClipToBounds="True" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseEnter="DrawingCanvas_MouseEnter" MouseLeave="DrawingCanvas_MouseLeave" MouseUp="Canvas_MouseUp" SnapsToDevicePixels="True">
+                <Canvas Name="DrawingCanvas" Background="White"  ClipToBounds="True"  MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseEnter="DrawingCanvas_MouseEnter" MouseLeave="DrawingCanvas_MouseLeave" MouseUp="Canvas_MouseUp" SnapsToDevicePixels="True" >
                     <!-- The circle (or icon) that will follow the mouse -->
                     <Canvas.RenderTransform>
                         <ScaleTransform x:Name="CanvasScaleTransform" ScaleX="1" ScaleY="1"/>
-                    </Canvas.RenderTransform>                   
+                    </Canvas.RenderTransform>
 
                 </Canvas>
             </ScrollViewer>
 
 
         </DockPanel>
+        
     </Grid>
 </Window>

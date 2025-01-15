@@ -9,10 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Leonardo_Phoenix_Create_a_vibrant_poster_inspired_by_the_Super_2.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.1" />
     <PackageReference Include="Haley.WPF" Version="5.4.4" />
     <PackageReference Include="System.Formats.Asn1" Version="9.0.0" />
     <PackageReference Include="WebDav.Client" Version="2.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Leonardo_Phoenix_Create_a_vibrant_poster_inspired_by_the_Super_2.jpg" />
   </ItemGroup>
 
 </Project>
