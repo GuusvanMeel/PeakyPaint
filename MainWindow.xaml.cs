@@ -432,5 +432,11 @@ namespace DrawingApp
         {
             ChangeColor((Color)PreviousColorButton.Tag);
         }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            DownloadWindow downloadWindow = new();
+            downloadWindow.Show();
+        }
     }
     }

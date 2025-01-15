@@ -35,6 +35,8 @@
                 </MenuItem>
                 <MenuItem Header="Send" Background="MediumSlateBlue"  HorizontalAlignment="Left" Click="MenuItem_Click"  Width="auto">
                 </MenuItem>
+                <MenuItem Header="Download" Background="DarkRed"  HorizontalAlignment="Left" Click="MenuItem_Click_1"  Width="auto">
+                </MenuItem>
 
             </Menu>
             <StackPanel DockPanel.Dock="Right" Width="100" Background="LightGray">
