@@ -8,6 +8,7 @@ using System.IO;
 using PeakyPaint;
 using System.Configuration;
 using System.Formats.Asn1;
+using System.Diagnostics;
 
 
 namespace DrawingApp
@@ -20,10 +21,10 @@ namespace DrawingApp
         private int thickness = 20;
         private Brush selectedbrush = new SolidColorBrush(Colors.Black);
         private Point position;
-        private double zoomFactor = 1.0;
         private DrawingUtensil utensil;
         private Ellipse MouseIcon; // Declare the MouseIcon ellipse
-        private Cloudsaves cloudsaves = new Cloudsaves();
+        private Cloudsaves cloudsaves = new();
+        public bool lastPressedRadio { get; set; }
 
         public MainWindow()
         {
@@ -53,24 +54,20 @@ namespace DrawingApp
 
 
                 position = e.GetPosition(DrawingCanvas); // Get initial mouse position
-
-                RadioButton button = WhatRadioButton();
-
-                switch (button.Name)
+                if (lastPressedRadio)
                 {
-                    case "LinearGradiant":
-                        selectedbrush = new LinearGradientBrush(Colors.Red, Colors.Black, 45);
-                        break;
-                    case "RadialGradient":                                                      //moeten kleuren kunnen kiezen
-                        selectedbrush = new RadialGradientBrush(Colors.Red, Colors.Blue);
-                        break;
-                    case "Eraser":
-                        selectedbrush = Brushes.White; //moet background colour zijn
-                        break;
-                    default:
-                        selectedbrush = new SolidColorBrush(Colors.Black);
-                        break;
+                    RadioButton button = WhatRadioButton();
 
+                    switch (button.Name)
+                    {
+                        case "Eraser":
+                            selectedbrush = Brushes.White; //moet background colour zijn
+                            break;
+                        default:
+                            selectedbrush = new SolidColorBrush(selectedColor);
+                            break;
+
+                    }
                 }
                 currentLine = utensil.Line(selectedbrush, thickness);
                 SetDot(selectedbrush, thickness, position);
@@ -79,6 +76,18 @@ namespace DrawingApp
 
                 currentLine.Points.Add(position);  // Add first point to the line
             }
+        }
+        public void GradientBrush(Color color1, Color color2, string button)
+        {
+            if (button == "LinearGradient")
+            {
+                selectedbrush = new LinearGradientBrush(color1, color2, 45);
+            }
+            else if (button == "RadialGradient")
+            {
+                selectedbrush = new RadialGradientBrush(color1, color2);
+            }
+
         }
 
 
@@ -110,8 +119,10 @@ namespace DrawingApp
         // Color Picker selection changed
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
+
             if (e.NewValue.HasValue)
             {
+
                 selectedColor = e.NewValue.Value;
             }
         }
@@ -126,8 +137,8 @@ namespace DrawingApp
                     return radioButton;
                 }
             }
-            // Dynamically create a RadioButton for SolidColorBrush (if no other is checked)
-            RadioButton defaultButton = new RadioButton
+
+            RadioButton defaultButton = new()
             {
                 Name = "SolidcolorBrush",
                 Content = "SolidcolorBrush"
@@ -150,31 +161,6 @@ namespace DrawingApp
         }
 
 
-
-    
-
-
-        // Zoom In
-        private void ZoomIn()
-        {
-            zoomFactor *= 1.1;
-            UpdateCanvasZoom();
-        }
-
-
-        // Zoom Out
-        private void ZoomOut()
-        {
-            zoomFactor /= 1.1;
-            UpdateCanvasZoom();
-        }
-        private void UpdateCanvasZoom()
-        {
-            CanvasScaleTransform.ScaleX = zoomFactor;
-            CanvasScaleTransform.ScaleY = zoomFactor;
-        }
-
-       
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SliderValueText.Text = $"Zoom: {Math.Round(e.NewValue * 100)}%";
@@ -183,7 +169,7 @@ namespace DrawingApp
                 CanvasScaleTransform.ScaleX = e.NewValue;
                 CanvasScaleTransform.ScaleY = e.NewValue;
             }
-               
+
         }
         private void BrushSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -277,7 +263,7 @@ namespace DrawingApp
                     Opacity = 0.2
                 };
                 DrawingCanvas.Children.Add(MouseIcon);
-                
+
             }
         }
 
@@ -289,7 +275,7 @@ namespace DrawingApp
 
 
             // Create a RenderTargetBitmap to render the Canvas content into a bitmap
-            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(
+            RenderTargetBitmap renderTargetBitmap = new(
                 (int)width, (int)height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
 
             MouseIcon.Visibility = Visibility.Collapsed;
@@ -467,6 +453,30 @@ namespace DrawingApp
         {
             DownloadWindow downloadWindow = new();
             downloadWindow.Show();
+        }
+
+        private void LinearGradiant_Click(object sender, RoutedEventArgs e)
+        {
+            lastPressedRadio = false;
+            GoToPicker("LinearGradient");
+        }
+
+        private void RadialGradient_Click(object sender, RoutedEventArgs e)
+        {
+            lastPressedRadio = false;
+            GoToPicker("RadialGradient");
+        }
+        private void GoToPicker(string buttonname)
+        {
+            _2ColorPickerWIndow picker = new(buttonname, this);
+            picker.Show();
+        }
+
+
+
+        private void RadioButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            lastPressedRadio = true;
         }
     }
 }
