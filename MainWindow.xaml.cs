@@ -29,9 +29,15 @@ namespace DrawingApp
         private bool TextBoxButton = false;
         private bool iseditingtextbox;
         Color colortext;
+ 
+        public string PeakyPaintDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), @"Peakypaint\");
+
+
+
         public MainWindow()
         {
             InitializeComponent();
+            mkdirPeakypaint();
             utensil = new(DrawingCanvas);
             // Create the MouseIcon ellipse
             MouseIcon = new Ellipse
@@ -44,6 +50,7 @@ namespace DrawingApp
 
             // Add the ellipse to the Canvas
             DrawingCanvas.Children.Add(MouseIcon);
+            cloudsaves = new Cloudsaves(this);
 
         }
 
@@ -265,7 +272,7 @@ namespace DrawingApp
             }
         }
 
-        private void LoadMenuItem_Click(object sender, RoutedEventArgs e)
+        public void LoadMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // Open a file dialog to select the saved bitmap
             Microsoft.Win32.OpenFileDialog openFileDialog = new()
@@ -354,7 +361,7 @@ namespace DrawingApp
             }
         }
 
-        private async Task SaveMenuItem_Click(string filepath)
+        private async Task SaveMenuItem_Click(string filename)
         {
             try
             {
@@ -363,7 +370,7 @@ namespace DrawingApp
                 double canvasHeight = DrawingCanvas.ActualHeight;
 
                 // Define a temp file path
-                string tempFilePath = filepath;
+                string tempFilePath = PeakyPaintDir+filename;
 
                 // Create a RenderTargetBitmap to capture the Canvas area
                 RenderTargetBitmap renderTargetBitmap = new(
@@ -408,6 +415,48 @@ namespace DrawingApp
         }
 
 
+        public void LoadMenuItem_Click(string _filePath)
+        {
+                // Load the selected bitmap from the file
+                string filePath = _filePath;
+                System.Drawing.Bitmap loadedBitmap = new(filePath);
+
+                // Convert the System.Drawing.Bitmap to a WPF BitmapImage
+                BitmapImage bitmapImage = new();
+                using (MemoryStream memoryStream = new())
+                {
+                    loadedBitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.StreamSource = memoryStream;
+                    bitmapImage.EndInit();
+                }
+
+                // Create an Image control to display the loaded bitmap
+                Image imageControl = new()
+                {
+                    Source = bitmapImage,
+                    Stretch = Stretch.None
+                };
+
+                // Add the image control to the Canvas, with the same offset
+                double cropOffset = 0; // This should match the saved offset
+                Canvas.SetTop(imageControl, cropOffset); // Place the image 100px from the top of the Canvas
+                DrawingCanvas.Children.Add(imageControl);
+                MouseIcon = new Ellipse
+                {
+                    Fill = new SolidColorBrush(Colors.Red),
+                    Width = 20,
+                    Height = 20,
+                    Opacity = 0.2
+                };
+                DrawingCanvas.Children.Add(MouseIcon);
+
+            }
+        
+
 
         private void DrawingCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
@@ -421,18 +470,21 @@ namespace DrawingApp
             DrawingCanvas.MouseDown += Canvas_MouseDown;
         }
 
+
+        //upload send button
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            string filepath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "temp_file.bmp");
-            string iconFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "temp_file.jpg");
+            string timenow = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string filename = $"{timenow}.bmp";
+            string iconFileName = $"{timenow}.jpg";
 
             // Save the menu item
-            await SaveMenuItem_Click(filepath);
+            await SaveMenuItem_Click(filename);
 
             // Upload to cloud saves and export icon
-            await cloudsaves.UploadButton_Click(filepath);
-            await cloudsaves.ExportIcon(DrawingCanvas, iconFilePath);
-            await cloudsaves.UploadFileToNextcloud(iconFilePath, System.IO.Path.GetFileName(iconFilePath));
+            await cloudsaves.UploadButton_Click(sender, e, filename);
+            await cloudsaves.ExportIcon(DrawingCanvas, iconFileName);
+            await cloudsaves.UploadFileToNextcloud(this.PeakyPaintDir+iconFileName, iconFileName);
         }
 
     
@@ -475,8 +527,8 @@ namespace DrawingApp
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
-            DownloadWindow downloadWindow = new();
-            downloadWindow.Show();
+            DownloadWindow downloadWindow = new(this);
+            downloadWindow.ShowDialog();
         }
 
         private void Gradiant_Click(object sender, RoutedEventArgs e)
@@ -505,6 +557,22 @@ namespace DrawingApp
         private void TextButton_Click(object sender, RoutedEventArgs e)
         {
             TextBoxButton = true;
+        }
+
+        private void mkdirPeakypaint()
+        {
+            
+
+            // Create the directory if it doesn't exist
+            if (!Directory.Exists(PeakyPaintDir))
+            {
+                Directory.CreateDirectory(PeakyPaintDir);
+                Console.WriteLine("Directory created successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Directory already exists.");
+            }
         }
     }
 }
