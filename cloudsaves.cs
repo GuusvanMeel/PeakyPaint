@@ -172,6 +172,43 @@ namespace PeakyPaint
             }
         }
 
+        public async Task DownloadIconFromNextcloud(string filename, DownloadWindow _downloadwindow)
+        {
+            DownloadWindow = _downloadwindow;
+            using HttpClient client = new HttpClient();
+
+            string remoteFileUrl = nextcloudUrl + filename;
+
+            string localFilePath = mainwindow.PeakyPaintDir + filename;
+
+            // Set up authentication
+            var byteArray = Encoding.UTF8.GetBytes($"{username}:{password}");
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+            try
+            {
+                // Send a GET request to download the file
+                HttpResponseMessage response = await client.GetAsync(remoteFileUrl);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show($"Error downloading file: {response.StatusCode} - {response.ReasonPhrase}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Read the file content and save it locally
+                byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
+                await File.WriteAllBytesAsync(localFilePath, fileBytes);
+
+                //MessageBox.Show($"File downloaded successfully: {localFilePath}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Exception occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         public async Task GetFilesFromNextcloud()
         {
             try
@@ -188,7 +225,7 @@ namespace PeakyPaint
                 // Display the 9 most recent files
                 foreach (var file in jpgFiles)
                 {
-                    await DownloadFileFromNextcloud(file, DownloadWindow);
+                    await DownloadIconFromNextcloud(file, DownloadWindow);
                     await DownloadWindow.FillNextImage($"Button{imageCount}", file);
 
 

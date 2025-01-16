@@ -40,102 +40,130 @@ namespace PeakyPaint
 
         private async void Button1_Click(object sender, RoutedEventArgs e)
         {
-            string bmpName = files[0];
-            if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+            if (files.Count > 0)  // Check if bmpName is not null
             {
-                bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                string bmpName = files[0];
+                if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                }
+                await cloudsaves.DownloadIconFromNextcloud(bmpName, this);
+                this.Close();
             }
-            await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
-            this.Close();
         }
 
         private async void Button2_Click(object sender, RoutedEventArgs e)
         {
-            string bmpName = files[1];
-            if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+            if (files.Count > 1)  // Check if bmpName is not null
             {
-                bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                string bmpName = files[1];
+                if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                }
+                await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
+                this.Close();
             }
-            await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
-            this.Close();
         }
 
         private async void Button3_Click(object sender, RoutedEventArgs e)
         {
-            string bmpName = files[2];
-            if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+            if (files.Count > 2)  // Check if bmpName is not null
             {
-                bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                string bmpName = files[2];
+                if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                }
+                await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
+                this.Close();
             }
-            await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
-            this.Close();
         }
 
         private async void Button4_Click(object sender, RoutedEventArgs e)
         {
-            string bmpName = files[3];
-            if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+            if (files.Count > 3)  // Check if bmpName is not null
             {
-                bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                string bmpName = files[3];
+                if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                }
+                await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
+                this.Close();
             }
-            await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
-            this.Close();
         }
 
         private async void Button5_Click(object sender, RoutedEventArgs e)
         {
-            string bmpName = files[4];
-            if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+            if (files.Count > 4)  // Check if bmpName is not null
             {
-                bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                string bmpName = files[4];
+                if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                }
+                await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
+                this.Close();
             }
-            await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
-            this.Close();
         }
 
         private async void Button6_Click(object sender, RoutedEventArgs e)
         {
-            string bmpName = files[5];
-            if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+            if (files.Count > 5)  // Check if bmpName is not null
             {
-                bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                string bmpName = files[5];
+                if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                }
+                await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
+                this.Close();
             }
-            await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
-            this.Close();
         }
 
         private async void Button7_Click(object sender, RoutedEventArgs e)
         {
-            string bmpName = files[6];
-            if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+            if (files.Count > 6)  // Check if bmpName is not null
             {
-                bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                string bmpName = files[6];
+                if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                }
+                await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
+                this.Close();
             }
-            await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
-            this.Close();
         }
 
         private async void Button8_Click(object sender, RoutedEventArgs e)
         {
-            string bmpName = files[7];
-            if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+            if (files.Count > 7)  // Check if bmpName is not null
             {
-                bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                string bmpName = files[7];
+                if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                }
+                await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
+                this.Close();
             }
-            await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
-            this.Close();
         }
 
         private async void Button9_Click(object sender, RoutedEventArgs e)
         {
-            string bmpName = files[8];
-            if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+            if (files.Count > 8)  // Check if bmpName is not null
             {
-                bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                string bmpName = files[8];
+                if (!System.IO.Path.GetExtension(bmpName).Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
+                }
+                await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
+                this.Close();
             }
-            await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
-            this.Close();
         }
+
 
         private async void refreshImages()
         {
