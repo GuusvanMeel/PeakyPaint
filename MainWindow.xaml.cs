@@ -427,36 +427,26 @@ namespace DrawingApp
         }
        
 
-        private void PreviousColor_Click(object sender, RoutedEventArgs e)
-        {
-            ChangeColor((Color)PreviousColorButton.Tag);
-        }
-
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
             DownloadWindow downloadWindow = new();
             downloadWindow.Show();
         }
 
-        private void LinearGradiant_Click(object sender, RoutedEventArgs e)
+        private void Gradiant_Click(object sender, RoutedEventArgs e)
         {
+            Button button = (Button)sender;
+           
             lastPressedRadio = false;
-            GoToPicker("LinearGradient");
+            GoToPicker(button.Name);
+            
         }
 
-        private void RadialGradient_Click(object sender, RoutedEventArgs e)
-        {
-            lastPressedRadio = false;
-            GoToPicker("RadialGradient");
-        }
         private void GoToPicker(string buttonname)
         {
             _2ColorPickerWIndow picker = new(buttonname, this);
             picker.Show();
         }
-
-
-
         private void RadioButton_Click_1(object sender, RoutedEventArgs e)
         {
             lastPressedRadio = true;
