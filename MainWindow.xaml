@@ -4,7 +4,9 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Background="LightGray"
         Title="Drawing App" Height="450" Width="800"
-         WindowState="Normal" WindowStyle="SingleBorderWindow">
+         WindowState="Normal" WindowStyle="SingleBorderWindow"
+        ResizeMode="NoResize"
+        >
 
 
 
