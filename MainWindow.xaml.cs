@@ -24,7 +24,7 @@ namespace DrawingApp
         private Point position;
         private readonly DrawingUtensil utensil;
         private Ellipse MouseIcon; // Declare the MouseIcon ellipse
-        private readonly Cloudsaves cloudsaves = new();
+        private readonly Cloudsaves cloudsaves;
         private bool LastPressedRadio = true;
         private bool TextBoxButton = false;
         private bool iseditingtextbox;
