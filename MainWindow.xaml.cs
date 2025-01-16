@@ -149,16 +149,21 @@ namespace DrawingApp
 
         private void SetDot(Brush selectedbrush, double thickness, Point position)
         {
-            Ellipse currentDot = new()
+            if (!(selectedbrush is LinearGradientBrush) && !(selectedbrush is RadialGradientBrush))
             {
-                Fill = selectedbrush,
-                Width = thickness,
-                Height = thickness
-            };
 
-            Canvas.SetLeft(currentDot, position.X - thickness / 2);
-            Canvas.SetTop(currentDot, position.Y - thickness / 2);
-            DrawingCanvas.Children.Add(currentDot);
+
+                Ellipse currentDot = new()
+                {
+                    Fill = selectedbrush,
+                    Width = thickness,
+                    Height = thickness
+                };
+
+                Canvas.SetLeft(currentDot, position.X - thickness / 2);
+                Canvas.SetTop(currentDot, position.Y - thickness / 2);
+                DrawingCanvas.Children.Add(currentDot);
+            }
         }
 
 

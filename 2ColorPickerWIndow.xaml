@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PeakyPaint"
         mc:Ignorable="d"
@@ -24,11 +25,22 @@
         </Grid.ColumnDefinitions>
 
         <!-- First ColorPicker -->
-        <xctk:ColorPicker Name="ColorPicker1" Width="300" Height="200" SelectedColor="Black" SelectedColorChanged="ColorPicker1_SelectedColorChanged"                         Grid.Row="0" Grid.Column="0" Margin="10"/>
+        <xctk:ColorPicker Name="ColorPicker1" Width="300" Height="200" SelectedColor="Black" SelectedColorChanged="ColorPicker1_SelectedColorChanged" Grid.Row="0" Grid.Column="0" Margin="10"/>
+        <Rectangle
+        Fill="{Binding ElementName=ColorPicker1, Path=SelectedColorText}"
+        Stroke="Black"
+            IsHitTestVisible="False"
+        StrokeThickness="1" Margin="46,77,60,76" />
 
         <!-- Second ColorPicker -->
         <xctk:ColorPicker Name="ColorPicker2" Width="300" Height="200" SelectedColor="White" SelectedColorChanged="ColorPicker2_SelectedColorChanged"
                           Grid.Row="0" Grid.Column="1" Margin="10"/>
+        <Rectangle
+        Fill="{Binding ElementName=ColorPicker2, Path=SelectedColorText}"
+        Stroke="Black"
+         IsHitTestVisible="False"
+        StrokeThickness="1" 
+            Grid.Row="0" Grid.Column="1" Margin="46,77,60,76"/>
 
         <!-- Confirm Button (Bottom Right) -->
         <Button Name="ConfirmButton" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="100" Height="40"
