@@ -9,6 +9,7 @@ using PeakyPaint;
 using System.Configuration;
 using System.Formats.Asn1;
 using System.Diagnostics;
+using Haley.Utils;
 
 
 namespace DrawingApp
@@ -21,11 +22,13 @@ namespace DrawingApp
         private int thickness = 20;
         private Brush selectedbrush = new SolidColorBrush(Colors.Black);
         private Point position;
-        private DrawingUtensil utensil;
+        private readonly DrawingUtensil utensil;
         private Ellipse MouseIcon; // Declare the MouseIcon ellipse
-        private Cloudsaves cloudsaves = new();
-        public bool lastPressedRadio { get; set; }
-
+        private readonly Cloudsaves cloudsaves = new();
+        private bool LastPressedRadio = true;
+        private bool TextBoxButton = false;
+        private bool iseditingtextbox;
+        Color colortext;
         public MainWindow()
         {
             InitializeComponent();
@@ -47,36 +50,44 @@ namespace DrawingApp
         // Start drawing when the mouse button is pressed
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            isDrawing = true;
-
-            if (e.ButtonState == MouseButtonState.Pressed)
+            
+            position = e.GetPosition(DrawingCanvas);     
+            if (TextBoxButton)
             {
-
-
-                position = e.GetPosition(DrawingCanvas); // Get initial mouse position              
-                if (lastPressedRadio == true)
-                {
-                    RadioButton button = WhatRadioButton();
-
-                    switch (button.Name)
-                    {
-                        case "Eraser":
-                            selectedbrush = Brushes.White; //moet background colour zijn
-                            break;
-                        default:
-                            selectedbrush = new SolidColorBrush(selectedColor);
-                            break;
-
-                    }
-                }
+                SpawnTextBox(position);
                 
-                currentLine = utensil.Line(selectedbrush, thickness);
-                SetDot(selectedbrush, thickness, position);
-
-                DrawingCanvas.Children.Add(currentLine); // Add line to canvas
-
-                currentLine.Points.Add(position);  // Add first point to the line
             }
+            else if(!iseditingtextbox)
+            {
+                isDrawing = true;
+
+                if (e.ButtonState == MouseButtonState.Pressed)
+                {
+
+
+                             
+                    if (LastPressedRadio == true)
+                    {
+                        RadioButton? button = WhatRadioButton();
+                        if (button != null)
+                        {
+                            selectedbrush = button.Name switch
+                            {
+                                "Eraser" => Brushes.White,//moet background colour zijn
+                                _ => new SolidColorBrush(selectedColor),
+                            };
+                        }
+                    }
+
+                    currentLine = utensil.Line(selectedbrush, thickness);
+                    SetDot(selectedbrush, thickness, position);
+
+                    DrawingCanvas.Children.Add(currentLine); // Add line to canvas
+                    Canvas.SetZIndex(currentLine, 0);
+                    currentLine.Points.Add(position);  // Add first point to the line
+                }
+            }
+           
         }
         public void GradientBrush(Color color1, Color color2, string button)
         {
@@ -101,7 +112,11 @@ namespace DrawingApp
             if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
             {
                 currentLine.Points.Add(position);
-                //SetDot(selectedbrush, thickness, position);
+                if(selectedbrush is SolidColorBrush)
+                {
+                    SetDot(selectedbrush, thickness, position);
+                }
+
 
             }
         }
@@ -115,6 +130,45 @@ namespace DrawingApp
                 SetDot(selectedbrush, thickness, position);
             }
 
+        }
+        private void SpawnTextBox(Point position)
+        {
+            TextBox textBox = new TextBox
+            {
+                Width = 100, // Set the width of the TextBox
+                Height = 30, // Set the height of the TextBox
+                Text = "Click to Edit", // Placeholder text
+                BorderThickness = new(0),
+                Background = Brushes.Transparent,
+                Foreground = Brushes.Black,
+            };
+            textBox.KeyDown += TextBox_KeyDown;
+            textBox.LostFocus += TextBox_LostFocus;
+
+            Canvas.SetLeft(textBox, position.X);  
+            Canvas.SetTop(textBox, position.Y);   
+
+            
+            DrawingCanvas.Children.Add(textBox);
+            Canvas.SetZIndex(textBox, 1);
+           
+            textBox.Focus();
+            TextBoxButton = false;
+        }
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // When the TextBox loses focus, set the flag to false, allowing drawing
+            iseditingtextbox = false;
+        }
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+           
+            if (e.Key == Key.Delete)
+            {
+                
+                TextBox textbox = sender as TextBox;
+                DrawingCanvas.Children.Remove(textbox);
+            }
         }
 
         // Color Picker selection changed
@@ -149,7 +203,7 @@ namespace DrawingApp
 
         private void SetDot(Brush selectedbrush, double thickness, Point position)
         {
-            if (!(selectedbrush is LinearGradientBrush) && !(selectedbrush is RadialGradientBrush))
+            if ((selectedbrush is not LinearGradientBrush) && (selectedbrush is not RadialGradientBrush))
             {
 
 
@@ -164,18 +218,6 @@ namespace DrawingApp
                 Canvas.SetTop(currentDot, position.Y - thickness / 2);
                 DrawingCanvas.Children.Add(currentDot);
             }
-        }
-
-
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            SliderValueText.Text = $"Zoom: {Math.Round(e.NewValue * 100)}%";
-            if (CanvasScaleTransform != null)
-            {
-                CanvasScaleTransform.ScaleX = e.NewValue;
-                CanvasScaleTransform.ScaleY = e.NewValue;
-            }
-
         }
         private void BrushSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -290,7 +332,7 @@ namespace DrawingApp
             renderTargetBitmap.Render(DrawingCanvas);
 
             // Show a SaveFileDialog to choose where to save the file
-            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new()
             {
                 Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpeg)|*.jpeg|JPG Files (*.jpg)|*.jpg|AVIF Files (*.avif)|*.avif"
             };
@@ -298,19 +340,17 @@ namespace DrawingApp
             if (saveFileDialog.ShowDialog() == true)
             {
                 // Create a file stream to save the image to
-                using (System.IO.FileStream fs = new System.IO.FileStream(saveFileDialog.FileName, System.IO.FileMode.Create))
-                {
-                    // Choose the appropriate encoder based on the file extension
-                    BitmapEncoder encoder = saveFileDialog.FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
-                        ? new PngBitmapEncoder()
-                        : new BmpBitmapEncoder();
+                using System.IO.FileStream fs = new(saveFileDialog.FileName, System.IO.FileMode.Create);
+                // Choose the appropriate encoder based on the file extension
+                BitmapEncoder encoder = saveFileDialog.FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
+                    ? new PngBitmapEncoder()
+                    : new BmpBitmapEncoder();
 
-                    // Add the frame (image) to the encoder
-                    encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+                // Add the frame (image) to the encoder
+                encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
 
-                    // Save the image to the selected file
-                    encoder.Save(fs);
-                }
+                // Save the image to the selected file
+                encoder.Save(fs);
             }
         }
 
@@ -343,7 +383,7 @@ namespace DrawingApp
                 encoder.Save(memoryStream);
 
                 // Save the memory stream to the temp file
-                using (FileStream fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
+                using (FileStream fileStream = new (tempFilePath, FileMode.Create, FileAccess.Write))
                 {
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     memoryStream.CopyTo(fileStream);
@@ -364,6 +404,7 @@ namespace DrawingApp
                 MessageBox.Show($"Error saving file: {ex.Message}");
             }
             MouseIcon.Visibility = Visibility.Visible;
+
         }
 
 
@@ -389,7 +430,7 @@ namespace DrawingApp
             await SaveMenuItem_Click(filepath);
 
             // Upload to cloud saves and export icon
-            await cloudsaves.UploadButton_Click(sender, e, filepath);
+            await cloudsaves.UploadButton_Click(filepath);
             await cloudsaves.ExportIcon(DrawingCanvas, iconFilePath);
             await cloudsaves.UploadFileToNextcloud(iconFilePath, System.IO.Path.GetFileName(iconFilePath));
         }
@@ -414,7 +455,7 @@ namespace DrawingApp
             TextColor(selectedColor, CurrentColorButton);
 
         }
-        private void TextColor(Color color, Button button)
+        private static void TextColor(Color color, Button button)
         {
             if (color == Colors.Black)
             {
@@ -442,7 +483,7 @@ namespace DrawingApp
         {
             Button button = (Button)sender;
            
-            lastPressedRadio = false;
+            LastPressedRadio = false;
             GoToPicker(button.Name);
             
         }
@@ -454,7 +495,16 @@ namespace DrawingApp
         }
         private void RadioButton_Click_1(object sender, RoutedEventArgs e)
         {
-            lastPressedRadio = true;
+            LastPressedRadio = true;
+        }
+        private void ClearCanvas(object sender, RoutedEventArgs e)
+        {
+            DrawingCanvas.Children.Clear();
+        }
+
+        private void TextButton_Click(object sender, RoutedEventArgs e)
+        {
+            TextBoxButton = true;
         }
     }
 }

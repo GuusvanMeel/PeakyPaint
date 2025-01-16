@@ -16,9 +16,9 @@ namespace PeakyPaint
     internal class Cloudsaves
     {
         public string nextcloudUrl = "http://192.168.128.149/remote.php/dav/files/admin/Peakypaint/Global/";
-        private string username = "admin";
-        private string password = "Welkom123!";
-        public async Task UploadButton_Click(object sender, RoutedEventArgs e, string _filepath)
+        private readonly string username = "admin";
+        private readonly string password = "Welkom123!";
+        public async Task UploadButton_Click(string _filepath)
         {
 
                 string filePath = _filepath;
@@ -44,7 +44,7 @@ namespace PeakyPaint
         {
             string remoteUrl = $"{nextcloudUrl}{remoteFileName}";
 
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new ();
 
             // Set up the authentication
             var byteArray = System.Text.Encoding.UTF8.GetBytes($"{username}:{password}");
@@ -88,7 +88,7 @@ namespace PeakyPaint
             }
 
             // Create a RenderTargetBitmap to render the Canvas content
-            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(
+            RenderTargetBitmap renderTargetBitmap = new (
                 previewWidth, previewHeight, 96, 96, PixelFormats.Pbgra32);
 
             // Ensure the Canvas is properly measured and arranged
@@ -99,7 +99,7 @@ namespace PeakyPaint
             renderTargetBitmap.Render(DrawingCanvas);
 
             // Save the image to the file
-            using FileStream fs = new FileStream(_filepath, FileMode.Create);
+            using FileStream fs = new (_filepath, FileMode.Create);
             BitmapEncoder encoder = _filepath.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
                 ? new PngBitmapEncoder()
                 : new JpegBitmapEncoder { QualityLevel = 50 };

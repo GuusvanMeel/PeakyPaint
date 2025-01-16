@@ -18,8 +18,8 @@ namespace PeakyPaint
     
     public partial class _2ColorPickerWIndow : Window
     {
-        string button;
-        MainWindow window;
+       private readonly string  button;
+        private readonly MainWindow window;
         public _2ColorPickerWIndow(string _buttonname, MainWindow _window)
         {
             InitializeComponent();
@@ -57,7 +57,7 @@ namespace PeakyPaint
 
         private void ColorPicker1_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-
+            
         }
     }
 }

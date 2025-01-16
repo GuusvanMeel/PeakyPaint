@@ -118,8 +118,8 @@
                     <Button Content="RadialGradient" Name="RadialGradient" Height="41" Width="78" Click="Gradiant_Click"  />
                     <RadioButton Content="Eraser" Name="Eraser" Height="41" Width="78" Click="RadioButton_Click_1"/>
                     <xctk:ColorPicker Name="ColorPicker" Height="30" Width="80" SelectedColor="Black" SelectedColorChanged="ColorPicker_SelectedColorChanged"/>
-                    <TextBlock Name="SliderValueText" Text="Zoom: 100%" HorizontalAlignment="Left" VerticalAlignment="Center" Width="70" Margin="10,0,0,0" />
-                    <Slider  VerticalAlignment="Center" Minimum="0.01" Maximum="3" Value="1" TickFrequency="0.01" ValueChanged="Slider_ValueChanged" Width="56" />
+                    <Button Content=" Clear canvas" Name ="Clearcanvas" Height="41" Width=" 78" Click="ClearCanvas"></Button>
+                    <RadioButton Content="Text" Name="TextButton" Height="41" Width="78" Click="TextButton_Click"></RadioButton>
 
                 </ToolBar>
 
