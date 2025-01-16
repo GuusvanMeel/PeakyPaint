@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <None Remove="Leonardo_Phoenix_Create_a_vibrant_poster_inspired_by_the_Super_2.jpg" />
+    <None Remove="loading.gif" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <Resource Include="Leonardo_Phoenix_Create_a_vibrant_poster_inspired_by_the_Super_2.jpg" />
+    <Resource Include="loading.gif" />
   </ItemGroup>
 
 </Project>
