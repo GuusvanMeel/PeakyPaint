@@ -40,14 +40,14 @@
 
             </Menu>
             <StackPanel DockPanel.Dock="Right" Width="100" Background="LightGray">
-                <Button Name="ButtonRed"  Background="Red" Tag="{x:Static Colors.Red}"  Click="ButtonRed_Click" Height="40" Margin="5"/>
-                <Button Name="ButtonBlue"  Background="Blue" Tag="{x:Static Colors.Blue}" Click="ButtonBlue_Click"  Height="40" Margin="5"/>
-                <Button Name="ButtonGreen"  Background="Green" Tag="{x:Static Colors.Green}" Click="ButtonGreen_Click"  Height="40" Margin="5"/>
-                <Button Name="ButtonYellow"  Background="Yellow" Tag="{x:Static Colors.Yellow}" Click="ButtonYellow_Click"  Height="40" Margin="5"/>
-                <Button Name="ButtonPurple"  Background="Purple" Tag="{x:Static Colors.Purple}" Click="ButtonPurple_Click"  Height="40" Margin="5"/>
+                <Button Name="ButtonRed"  Background="Red" Tag="{x:Static Colors.Red}"  Click="CommonColour" Height="40" Margin="5"/>
+                <Button Name="ButtonBlue"  Background="Blue" Tag="{x:Static Colors.Blue}" Click="CommonColour"  Height="40" Margin="5"/>
+                <Button Name="ButtonGreen"  Background="Green" Tag="{x:Static Colors.Green}" Click="CommonColour"  Height="40" Margin="5"/>
+                <Button Name="ButtonYellow"  Background="Yellow" Tag="{x:Static Colors.Yellow}" Click="CommonColour"  Height="40" Margin="5"/>
+                <Button Name="ButtonPurple"  Background="Purple" Tag="{x:Static Colors.Purple}" Click="CommonColour"  Height="40" Margin="5"/>
                 <!-- Spacer to push the buttons to the bottom -->
                 <Button Name="CurrentColorButton" Content="Current" Background="White" Height="50" Tag="{x:Static Colors.White}" FontSize="15" Padding="15" Margin="3"/>
-                <Button Name="PreviousColorButton" Content="Previous" Click="PreviousColor_Click"  Background="White" Height="50" Tag="{x:Static Colors.White}" FontSize="15" Padding="15" Margin="3"/>
+                <Button Name="PreviousColorButton" Content="Previous" Click="CommonColour"  Background="White" Height="50" Tag="{x:Static Colors.White}" FontSize="15" Padding="15" Margin="3"/>
 
             </StackPanel>           
 

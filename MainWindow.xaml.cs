@@ -53,8 +53,8 @@ namespace DrawingApp
             {
 
 
-                position = e.GetPosition(DrawingCanvas); // Get initial mouse position
-                if (lastPressedRadio)
+                position = e.GetPosition(DrawingCanvas); // Get initial mouse position              
+                if (lastPressedRadio == true)
                 {
                     RadioButton button = WhatRadioButton();
 
@@ -69,6 +69,7 @@ namespace DrawingApp
 
                     }
                 }
+                
                 currentLine = utensil.Line(selectedbrush, thickness);
                 SetDot(selectedbrush, thickness, position);
 
@@ -396,6 +397,7 @@ namespace DrawingApp
             selectedColor = color;
             ChangeColorButtons();
 
+
         }
         private void ChangeColorButtons()
         {
@@ -418,31 +420,12 @@ namespace DrawingApp
                 button.Foreground = new SolidColorBrush(Colors.Black);
             }
         }
-
-        private void ButtonRed_Click(object sender, RoutedEventArgs e)
+        private void CommonColour(object sender, RoutedEventArgs e)
         {
-            ChangeColor((Color)ButtonRed.Tag);
+            var tag = ((Button)sender).Tag;
+            ChangeColor((Color)tag);
         }
-
-        private void ButtonBlue_Click(object sender, RoutedEventArgs e)
-        {
-            ChangeColor((Color)ButtonBlue.Tag);
-        }
-
-        private void ButtonGreen_Click(object sender, RoutedEventArgs e)
-        {
-            ChangeColor((Color)ButtonGreen.Tag);
-        }
-
-        private void ButtonYellow_Click(object sender, RoutedEventArgs e)
-        {
-            ChangeColor((Color)ButtonYellow.Tag);
-        }
-
-        private void ButtonPurple_Click(object sender, RoutedEventArgs e)
-        {
-            ChangeColor((Color)ButtonPurple.Tag);
-        }
+       
 
         private void PreviousColor_Click(object sender, RoutedEventArgs e)
         {
