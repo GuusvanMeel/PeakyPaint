@@ -79,7 +79,7 @@ namespace PeakyPaint
 
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show("File uploaded successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //MessageBox.Show("File uploaded successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -201,7 +201,7 @@ namespace PeakyPaint
                 byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
                 await File.WriteAllBytesAsync(localFilePath, fileBytes);
 
-                //MessageBox.Show($"File downloaded successfully: {localFilePath}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                
             }
             catch (Exception ex)
             {
