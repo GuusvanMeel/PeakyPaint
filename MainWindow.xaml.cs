@@ -116,25 +116,23 @@ namespace DrawingApp
             
 
             
-            Point lastposition = position;           
+                    
             
                 position = e.GetPosition(DrawingCanvas);
 
             
 
 
-                position.X = Math.Round(position.X);
-                    position.Y = Math.Round(position.Y);
+                
 
                     Canvas.SetLeft(MouseIcon, position.X - MouseIcon.Width / 2);
                     Canvas.SetTop(MouseIcon, position.Y - MouseIcon.Height / 2);
 
-                    if (lastposition.X - position.X != 0 || lastposition.Y - position.Y != 0)
-                    {
+                    
                         if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
                         {   
                             currentLine.Points.Add(position);
-                    Trace.WriteLine(currentLine.Points);
+                    
                     
                             if (selectedbrush is SolidColorBrush)
                             {
@@ -143,7 +141,7 @@ namespace DrawingApp
 
 
                         }
-                    }
+                    
                 
             
             
@@ -155,7 +153,7 @@ namespace DrawingApp
 
         // Stop drawing when the mouse button is released
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
-        {currentLine.Points.Clear();
+        {
             isDrawing = false;
             if (selectedbrush.GetType() == typeof(SolidColorBrush))
             {
@@ -189,10 +187,7 @@ namespace DrawingApp
             TextBoxButton = false;
         }
 
-        private void LostFocus(object sender)
-        {
-
-        }
+ 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
            
@@ -546,9 +541,9 @@ namespace DrawingApp
         }
         private void CommonColour(object sender, RoutedEventArgs e)
         {
-            //var tag = ((Button)sender).Tag;
-            //ChangeColor((Color)tag);
-            DrawingCanvas.Children.Remove(currentLine);
+            var tag = ((Button)sender).Tag;
+            ChangeColor((Color)tag);
+
         }
        
 

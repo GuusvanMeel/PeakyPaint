@@ -6,7 +6,9 @@
         Title="Drawing App" Height="450" Width="800"
          WindowState="Normal" WindowStyle="SingleBorderWindow"
         ResizeMode="NoResize"
-        >
+        Icon="C:\Users\guusv\source\repos\PeakyPaint\icon.ico"
+
+    >
 
 
 
@@ -58,8 +60,12 @@
 
         <!-- New ToolBar Tray -->
             <ToolBarTray DockPanel.Dock="Top">
-                <ToolBar Name="TopToolbar" Background="Beige" Height="41" Margin="0,0,-59,0">
-                    <RadioButton Content="Paint Brush"  Height="41" Width="78" Click="RadioButton_Click_1"/>
+                <ToolBar Name="TopToolbar" Background="LightGray" Height="41" Margin="0,0,-59,0">
+                    <RadioButton Width="78" Height="41" Click="RadioButton_Click_1"  ToolTip="PaintBrush">
+                        <RadioButton.Content>
+                            <Image Source="C:\Users\guusv\source\repos\PeakyPaint\Icons\Brush.png" Width="78" Height="41" />
+                        </RadioButton.Content>
+                    </RadioButton>
                     <ComboBox Name="BrushSizeComboBox" Height="30" Width="100" Margin="5,0,0,0" SelectedIndex="19" SelectionChanged="BrushSizeComboBox_SelectionChanged">
                         <ComboBox.ItemsSource>
                             <x:Array Type="sys:Int32" xmlns:sys="clr-namespace:System;assembly=mscorlib">
@@ -116,12 +122,32 @@
                             </x:Array>
                         </ComboBox.ItemsSource>
                     </ComboBox>
-                    <Button Content="LinearGradient" Name="LinearGradient" Height="41" Width="78" Click="Gradiant_Click"/>
-                    <Button Content="RadialGradient" Name="RadialGradient" Height="41" Width="78" Click="Gradiant_Click"  />
-                    <RadioButton Content="Eraser" Name="Eraser" Height="41" Width="78" Click="RadioButton_Click_1"/>
+                    <Button ToolTip="LinearGradient" Name="LinearGradient" Height="41" Width="78" Click="Gradiant_Click">
+                        <Button.Content>
+                            <Image Source="C:\Users\guusv\source\repos\PeakyPaint\Icons\LinearGradient.png" />
+                        </Button.Content>
+                    </Button>
+                    <Button ToolTip="RadialGradient" Name="RadialGradient" Height="41" Width="78" Click="Gradiant_Click">
+                        <Button.Content>
+                            <Image Source="C:\Users\guusv\source\repos\PeakyPaint\Icons\RadialGradient.png" />
+                        </Button.Content>
+                    </Button>
+                    <RadioButton ToolTip="Eraser" Name="Eraser" Height="41" Width="78" Click="RadioButton_Click_1">
+                        <RadioButton.Content>
+                            <Image Source="C:\Users\guusv\source\repos\PeakyPaint\Icons\Eraser.png" Width="78" Height="41" />
+                        </RadioButton.Content>
+                    </RadioButton>
                     <xctk:ColorPicker Name="ColorPicker" Height="30" Width="80" SelectedColor="Black" SelectedColorChanged="ColorPicker_SelectedColorChanged"/>
-                    <Button Content=" Clear canvas" Name ="Clearcanvas" Height="41" Width=" 78" Click="ClearCanvas"></Button>
-                    <RadioButton Content="Text" Name="TextButton" Height="41" Width="78" Click="TextButton_Click"></RadioButton>
+                    <Button ToolTip=" Clear canvas" Name ="Clearcanvas" Height="41" Width=" 78" Click="ClearCanvas">
+                        <Button.Content>
+                            <Image Source="C:\Users\guusv\source\repos\PeakyPaint\Icons\ClearCanvas.png" />
+                        </Button.Content>
+                    </Button>
+                    <RadioButton ToolTip="Text" Name="TextButton" Height="41" Width="78" Click="TextButton_Click">
+                        <RadioButton.Content>
+                            <Image Source="C:\Users\guusv\source\repos\PeakyPaint\Icons\Text.png" Width="78" Height="41" />
+                        </RadioButton.Content>
+                    </RadioButton>
 
                 </ToolBar>
 
