@@ -23,6 +23,13 @@
   <ItemGroup>
     <Resource Include="Leonardo_Phoenix_Create_a_vibrant_poster_inspired_by_the_Super_2.jpg" />
     <Resource Include="loading.gif" />
+	  <resource Include="Icons\Brush.png"/>
+	  <resource Include="Icons\ClearCanvas.png"/>
+	  <resource Include="Icons\Eraser.png"/>
+	  <resource Include="Icons\Icon.ico"/>
+	  <resource Include="Icons\LinearGradient.png"/>
+	  <resource Include="Icons\RadialGradient.png"/>
+	  <resource Include="Icons\Text.png"/>	  
   </ItemGroup>
 
 </Project>
