@@ -10,6 +10,8 @@ using System.Configuration;
 using System.Formats.Asn1;
 using System.Diagnostics;
 using Haley.Utils;
+using System.Windows.Threading;
+using Haley.Models;
 
 
 namespace DrawingApp
@@ -84,8 +86,8 @@ namespace DrawingApp
                             };
                         }
                     }
-
                     currentLine = utensil.Line(selectedbrush, thickness);
+                    
                     SetDot(selectedbrush, thickness, position);
 
                     DrawingCanvas.Children.Add(currentLine); // Add line to canvas
@@ -108,30 +110,52 @@ namespace DrawingApp
 
         }
 
-
+        
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {   Point lastpositon = position;
-            position = e.GetPosition(DrawingCanvas);
-            Canvas.SetLeft(MouseIcon, position.X - MouseIcon.Width / 2);
-            Canvas.SetTop(MouseIcon, position.Y - MouseIcon.Height / 2);
-            if (position != lastpositon)
-            {
-                if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
-                {
-                    currentLine.Points.Add(position);
-                    if (selectedbrush is SolidColorBrush)
+        {
+            
+
+            
+            Point lastposition = position;           
+            
+                position = e.GetPosition(DrawingCanvas);
+
+            
+
+
+                position.X = Math.Round(position.X);
+                    position.Y = Math.Round(position.Y);
+
+                    Canvas.SetLeft(MouseIcon, position.X - MouseIcon.Width / 2);
+                    Canvas.SetTop(MouseIcon, position.Y - MouseIcon.Height / 2);
+
+                    if (lastposition.X - position.X != 0 || lastposition.Y - position.Y != 0)
                     {
-                        SetDot(selectedbrush, thickness, position);
+                        if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
+                        {   
+                            currentLine.Points.Add(position);
+                    Trace.WriteLine(currentLine.Points);
+                    
+                            if (selectedbrush is SolidColorBrush)
+                            {
+                                SetDot(selectedbrush, thickness, position);
+                            }
+
+
+                        }
                     }
+                
+            
+            
+            
 
 
-                }
-            }
         }
+
 
         // Stop drawing when the mouse button is released
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
-        {
+        {currentLine.Points.Clear();
             isDrawing = false;
             if (selectedbrush.GetType() == typeof(SolidColorBrush))
             {
@@ -149,8 +173,8 @@ namespace DrawingApp
                 BorderThickness = new(0),
                 Background = Brushes.Transparent,
                 Foreground = Brushes.DarkGray,
-                
-                
+
+
             };
             //textBox.LostFocus += LostFocus;
             textBox.PreviewKeyDown += TextBox_KeyDown;
@@ -522,8 +546,9 @@ namespace DrawingApp
         }
         private void CommonColour(object sender, RoutedEventArgs e)
         {
-            var tag = ((Button)sender).Tag;
-            ChangeColor((Color)tag);
+            //var tag = ((Button)sender).Tag;
+            //ChangeColor((Color)tag);
+            DrawingCanvas.Children.Remove(currentLine);
         }
        
 

@@ -129,7 +129,7 @@
 
             <!-- Drawing Area (Canvas) -->
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <Canvas Name="DrawingCanvas" Background="White"  ClipToBounds="True"  MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseEnter="DrawingCanvas_MouseEnter" MouseLeave="DrawingCanvas_MouseLeave" MouseUp="Canvas_MouseUp" SnapsToDevicePixels="True" >
+                <Canvas Name="DrawingCanvas" Background="White" Cursor="Pen" ClipToBounds="True"  MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseEnter="DrawingCanvas_MouseEnter" MouseLeave="DrawingCanvas_MouseLeave" MouseUp="Canvas_MouseUp" SnapsToDevicePixels="True" >
                     <!-- The circle (or icon) that will follow the mouse -->
                     <Canvas.RenderTransform>
                         <ScaleTransform x:Name="CanvasScaleTransform" ScaleX="1" ScaleY="1"/>

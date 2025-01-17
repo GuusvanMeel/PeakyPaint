@@ -10,15 +10,15 @@ using System.Windows.Shapes;
 
 namespace PeakyPaint
 {
-    
+
     class DrawingUtensil
     {
         public Brush Brush { get; set; }
-        
+
         public double Thickness { get; set; }
         private Canvas canvas;
 
-      public DrawingUtensil(Canvas _canvas)
+        public DrawingUtensil(Canvas _canvas)
         {
             canvas = _canvas;
             Brush = new SolidColorBrush();
@@ -34,6 +34,6 @@ namespace PeakyPaint
 
             return line;
         }
-       
+
     }
 }
