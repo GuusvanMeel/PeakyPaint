@@ -27,8 +27,7 @@ namespace DrawingApp
         private readonly Cloudsaves cloudsaves;
         private bool LastPressedRadio = true;
         private bool TextBoxButton = false;
-        private bool iseditingtextbox;
-        Color colortext;
+
  
         public string PeakyPaintDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), @"Peakypaint\");
 
@@ -64,7 +63,7 @@ namespace DrawingApp
                 SpawnTextBox(position);
                 
             }
-            else if(!iseditingtextbox)
+            else 
             {
                 isDrawing = true;
 
@@ -111,20 +110,22 @@ namespace DrawingApp
 
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {
+        {   Point lastposition = position;
             position = e.GetPosition(DrawingCanvas);
             Canvas.SetLeft(MouseIcon, position.X - MouseIcon.Width / 2);
             Canvas.SetTop(MouseIcon, position.Y - MouseIcon.Height / 2);
-
-            if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
+            if (position != lastposition)
             {
-                currentLine.Points.Add(position);
-                if(selectedbrush is SolidColorBrush)
+                if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
                 {
-                    SetDot(selectedbrush, thickness, position);
+                    currentLine.Points.Add(position);
+                    if (selectedbrush is SolidColorBrush)
+                    {
+                        SetDot(selectedbrush, thickness, position);
+                    }
+
+
                 }
-
-
             }
         }
 
@@ -144,14 +145,15 @@ namespace DrawingApp
             {
                 Width = 100, // Set the width of the TextBox
                 Height = 30, // Set the height of the TextBox
-                Text = "Click to Edit", // Placeholder text
+                Text = "Text", // Placeholder text
                 BorderThickness = new(0),
                 Background = Brushes.Transparent,
-                Foreground = Brushes.Black,
+                Foreground = Brushes.DarkGray,
+                
+                
             };
-            textBox.KeyDown += TextBox_KeyDown;
-            textBox.LostFocus += TextBox_LostFocus;
-
+            //textBox.LostFocus += LostFocus;
+            textBox.PreviewKeyDown += TextBox_KeyDown;
             Canvas.SetLeft(textBox, position.X);  
             Canvas.SetTop(textBox, position.Y);   
 
@@ -162,10 +164,10 @@ namespace DrawingApp
             textBox.Focus();
             TextBoxButton = false;
         }
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+
+        private void LostFocus(object sender)
         {
-            // When the TextBox loses focus, set the flag to false, allowing drawing
-            iseditingtextbox = false;
+
         }
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
