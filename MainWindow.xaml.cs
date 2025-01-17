@@ -110,11 +110,11 @@ namespace DrawingApp
 
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {   Point lastposition = position;
+        {   Point lastpositon = position;
             position = e.GetPosition(DrawingCanvas);
             Canvas.SetLeft(MouseIcon, position.X - MouseIcon.Width / 2);
             Canvas.SetTop(MouseIcon, position.Y - MouseIcon.Height / 2);
-            if (position != lastposition)
+            if (position != lastpositon)
             {
                 if (isDrawing && currentLine != null)  // Only draw if mouse button is pressed
                 {
