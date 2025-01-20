@@ -47,7 +47,7 @@ namespace PeakyPaint
                 {
                     bmpName = System.IO.Path.ChangeExtension(bmpName, ".bmp");
                 }
-                await cloudsaves.DownloadIconFromNextcloud(bmpName, this);
+                await cloudsaves.DownloadFileFromNextcloud(bmpName, this);
                 this.Close();
             }
         }

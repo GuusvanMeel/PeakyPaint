@@ -138,16 +138,17 @@
                         </RadioButton.Content>
                     </RadioButton>
                     <xctk:ColorPicker Name="ColorPicker" Height="30" Width="80" SelectedColor="Black" SelectedColorChanged="ColorPicker_SelectedColorChanged"/>
-                    <Button ToolTip=" Clear canvas" Name ="Clearcanvas" Height="41" Width=" 78" Click="ClearCanvas">
-                        <Button.Content>
-                            <Image Source="Icons\ClearCanvas.png" />
-                        </Button.Content>
-                    </Button>
                     <RadioButton ToolTip="Text" Name="TextButton" Height="41" Width="78" Click="TextButton_Click">
                         <RadioButton.Content>
                             <Image Source="Icons\Text.png" Width="78" Height="41" />
                         </RadioButton.Content>
                     </RadioButton>
+                    <Button ToolTip=" Clear canvas" Name ="Clearcanvas" Height="41" Width=" 78" Click="ClearCanvas">
+                        <Button.Content>
+                            <Image Source="Icons\ClearCanvas.png" />
+                        </Button.Content>
+                    </Button>
+                    
 
                 </ToolBar>
 

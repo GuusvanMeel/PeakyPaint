@@ -52,7 +52,7 @@ namespace PeakyPaint
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error uploading file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Error uploading file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -83,12 +83,12 @@ namespace PeakyPaint
                 }
                 else
                 {
-                    MessageBox.Show($"Error uploading file: {response.StatusCode} - {response.ReasonPhrase}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                   // MessageBox.Show($"Error uploading file: {response.StatusCode} - {response.ReasonPhrase}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Exception occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+               // MessageBox.Show($"Exception occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -135,6 +135,7 @@ namespace PeakyPaint
 
         public async Task DownloadFileFromNextcloud(string filename, DownloadWindow _downloadwindow)
         {
+            
             DownloadWindow = _downloadwindow;
             using HttpClient client = new HttpClient();
 
@@ -154,7 +155,7 @@ namespace PeakyPaint
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show($"Error downloading file: {response.StatusCode} - {response.ReasonPhrase}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //MessageBox.Show($"Error downloading file: {response.StatusCode} - {response.ReasonPhrase}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -168,7 +169,7 @@ namespace PeakyPaint
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Exception occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Exception occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -193,7 +194,7 @@ namespace PeakyPaint
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show($"Error downloading file: {response.StatusCode} - {response.ReasonPhrase}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                   // MessageBox.Show($"Error downloading file: {response.StatusCode} - {response.ReasonPhrase}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -205,7 +206,7 @@ namespace PeakyPaint
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Exception occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+               // MessageBox.Show($"Exception occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

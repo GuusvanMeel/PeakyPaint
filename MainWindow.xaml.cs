@@ -499,6 +499,7 @@ namespace DrawingApp
             string filename = $"{timenow}.bmp";
             string iconFileName = $"{timenow}.jpg";
 
+            MouseIcon.Visibility = Visibility.Collapsed;
             // Save the menu item
             await SaveMenuItem_Click(filename);
 
@@ -506,6 +507,7 @@ namespace DrawingApp
             await cloudsaves.UploadButton_Click(sender, e, filename);
             await cloudsaves.ExportIcon(DrawingCanvas, iconFileName);
             await cloudsaves.UploadFileToNextcloud(this.PeakyPaintDir+iconFileName, iconFileName);
+            MouseIcon.Visibility = Visibility.Visible;
         }
 
     
@@ -549,8 +551,10 @@ namespace DrawingApp
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
+            MouseIcon.Visibility = Visibility.Collapsed;
             DownloadWindow downloadWindow = new(this);
             downloadWindow.ShowDialog();
+            MouseIcon.Visibility = Visibility.Visible;
         }
 
         private void Gradiant_Click(object sender, RoutedEventArgs e)
